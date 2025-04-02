@@ -1,918 +1,302 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>彩票模拟选号开奖系统</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Microsoft YaHei', sans-serif;
-        }
-        
-        body {
-            background-color: #f5f5f5;
-            color: #333;
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px 0;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        h1 {
-            color: #e74c3c;
-            margin-bottom: 10px;
-        }
-        
-        .nav {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        
-        .nav-btn {
-            padding: 10px 20px;
-            margin: 0 10px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        
-        .nav-btn:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-        }
-        
-        .content {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-        }
-        
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .probability {
-            font-weight: bold;
-            color: #e74c3c;
-        }
-        
-        .simulator {
-            display: none;
-        }
-        
-        .active {
-            display: block;
-        }
-        
-        .ball-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .ball {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.2s;
-        }
-        
-        .red-ball {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .blue-ball {
-            background-color: #3498db;
-            color: white;
-        }
-        
-        .selected {
-            box-shadow: 0 0 0 3px #f1c40f;
-            transform: scale(1.1);
-        }
-        
-        .control-panel {
-            margin: 20px 0;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        
-        .btn:hover {
-            background-color: #27ae60;
-        }
-        
-        .btn-reset {
-            background-color: #e74c3c;
-        }
-        
-        .btn-reset:hover {
-            background-color: #c0392b;
-        }
-        
-        .btn-draw {
-            background-color: #9b59b6;
-        }
-        
-        .btn-draw:hover {
-            background-color: #8e44ad;
-        }
-        
-        .result-container {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            display: none;
-        }
-        
-        .result-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #2c3e50;
-        }
-        
-        .result-balls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        .result-info {
-            font-size: 18px;
-            margin: 10px 0;
-        }
-        
-        .prize {
-            font-weight: bold;
-            color: #e74c3c;
-        }
-        
-        .draw-numbers {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f1f1f1;
-            border-radius: 8px;
-            position: relative;
-        }
-        
-        .draw-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .draw-balls {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        
-        .edit-draw {
-            position: absolute;
-            right: 15px;
-            top: 15px;
-            color: #3498db;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        .input-group {
-            margin: 10px 0;
-        }
-        
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .input-group input {
-            padding: 8px;
-            width: 100%;
-            max-width: 300px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .back-btn {
-            padding: 10px 20px;
-            background-color: #95a5a6;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
-            margin-bottom: 20px;
-        }
-        
-        .back-btn:hover {
-            background-color: #7f8c8d;
-        }
-        
-        .alert {
-            padding: 15px;
-            background-color: #f8d7da;
-            color: #721c24;
-            border-radius: 4px;
-            margin: 10px 0;
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            .ball {
-                width: 35px;
-                height: 35px;
-                font-size: 14px;
-            }
-            
-            .nav {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .nav-btn {
-                margin: 5px 0;
-                width: 80%;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- 首页 -->
-        <div id="home" class="content active">
-            <header>
-                <h1>彩票模拟选号开奖系统</h1>
-                <p>模拟双色球和大乐透选号，了解中奖概率</p>
-            </header>
-            
-            <div class="nav">
-                <button class="nav-btn" onclick="showSimulator('ssq')">双色球模拟</button>
-                <button class="nav-btn" onclick="showSimulator('dlt')">大乐透模拟</button>
-            </div>
-            
-            <h2>双色球中奖概率分析</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>奖项</th>
-                        <th>匹配条件</th>
-                        <th>中奖概率</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>一等奖</td>
-                        <td>6红 + 1蓝</td>
-                        <td class="probability">1/17,721,088 ≈ 0.0000056%</td>
-                    </tr>
-                    <tr>
-                        <td>二等奖</td>
-                        <td>6红 + 0蓝</td>
-                        <td class="probability">15/17,721,088 ≈ 0.000085%</td>
-                    </tr>
-                    <tr>
-                        <td>三等奖</td>
-                        <td>5红 + 1蓝</td>
-                        <td class="probability">162/17,721,088 ≈ 0.0009%</td>
-                    </tr>
-                    <tr>
-                        <td>四等奖</td>
-                        <td>5红 + 0蓝 或 4红 + 1蓝</td>
-                        <td class="probability">0.043%</td>
-                    </tr>
-                    <tr>
-                        <td>五等奖</td>
-                        <td>4红 + 0蓝 或 3红 + 1蓝</td>
-                        <td class="probability">0.78%</td>
-                    </tr>
-                    <tr>
-                        <td>六等奖</td>
-                        <td>2红 + 1蓝 或 1红 + 1蓝 或 0红 + 1蓝</td>
-                        <td class="probability">5.89%</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <p><strong>总中奖概率</strong> ≈ <span class="probability">6.71%</span>（含六等奖）</p>
-            
-            <h2>大乐透中奖概率分析</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>奖项</th>
-                        <th>匹配条件</th>
-                        <th>中奖概率</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>一等奖</td>
-                        <td>5前 + 2后</td>
-                        <td class="probability">1/21,425,712 ≈ 0.0000047%</td>
-                    </tr>
-                    <tr>
-                        <td>二等奖</td>
-                        <td>5前 + 1后</td>
-                        <td class="probability">10/21,425,712 ≈ 0.000047%</td>
-                    </tr>
-                    <tr>
-                        <td>三等奖</td>
-                        <td>5前 + 0后</td>
-                        <td class="probability">45/21,425,712 ≈ 0.00021%</td>
-                    </tr>
-                    <tr>
-                        <td>四等奖</td>
-                        <td>4前 + 2后</td>
-                        <td class="probability">150/21,425,712 ≈ 0.0007%</td>
-                    </tr>
-                    <tr>
-                        <td>五等奖</td>
-                        <td>4前 + 1后</td>
-                        <td class="probability">0.007%</td>
-                    </tr>
-                    <tr>
-                        <td>六等奖</td>
-                        <td>3前 + 2后 或 4前 + 0后</td>
-                        <td class="probability">0.057%</td>
-                    </tr>
-                    <tr>
-                        <td>七等奖</td>
-                        <td>3前 + 1后 或 2前 + 2后</td>
-                        <td class="probability">0.51%</td>
-                    </tr>
-                    <tr>
-                        <td>八等奖</td>
-                        <td>3前 + 0后 或 1前 + 2后 或 2前 + 1后 或 0前 + 2后</td>
-                        <td class="probability">3.66%</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <p><strong>总中奖概率</strong> ≈ <span class="probability">4.24%</span>（含八等奖）</p>
-            
-            <h2>关键结论</h2>
-            <ul>
-                <li><strong>双色球</strong>：一等奖概率约 <span class="probability">1/1772万</span>，六等奖（5元）概率最高（5.89%）。</li>
-                <li><strong>大乐透</strong>：一等奖概率约 <span class="probability">1/2142万</span>，八等奖（5元）概率最高（3.66%）。</li>
-                <li><strong>对比</strong>：双色球总中奖率更高（6.71% vs 4.24%），但大乐透奖金池更大（因后区增加组合难度）。</li>
-            </ul>
-        </div>
-        
-        <!-- 双色球模拟器 -->
-        <div id="ssq-simulator" class="simulator content">
-            <button class="back-btn" onclick="backToHome()">返回首页</button>
-            <h2>双色球模拟选号</h2>
-            
-            <div class="alert" id="ssq-alert"></div>
-            
-            <div class="control-panel">
-                <button class="btn" onclick="randomSelect('ssq-red', 6)">机选红球</button>
-                <button class="btn" onclick="randomSelect('ssq-blue', 1)">机选蓝球</button>
-                <button class="btn" onclick="randomSelectAll('ssq')">机选一注</button>
-                <button class="btn" onclick="batchRandomSelect('ssq', 5)">机选5注</button>
-                <button class="btn btn-reset" onclick="resetSelection('ssq')">重置</button>
-            </div>
-            
-            <h3>红球区（选6个）</h3>
-            <div class="ball-container" id="ssq-red">
-                <!-- 红球1-33 -->
-            </div>
-            
-            <h3>蓝球区（选1个）</h3>
-            <div class="ball-container" id="ssq-blue">
-                <!-- 蓝球1-16 -->
-            </div>
-            
-            <h3>已选号码</h3>
-            <div class="selected-numbers" id="ssq-selected">
-                <p>红球：<span id="ssq-selected-red"></span></p>
-                <p>蓝球：<span id="ssq-selected-blue"></span></p>
-            </div>
-            
-            <div class="draw-numbers" id="ssq-draw">
-                <div class="draw-title">开奖号码</div>
-                <div class="draw-balls" id="ssq-draw-balls"></div>
-                <div class="edit-draw" onclick="editDrawNumbers('ssq')">修改开奖号码</div>
-                <div class="hidden" id="ssq-draw-edit">
-                    <div class="input-group">
-                        <label for="ssq-draw-red">红球（6个，用空格分隔）</label>
-                        <input type="text" id="ssq-draw-red" placeholder="例如：1 5 12 18 25 33">
-                    </div>
-                    <div class="input-group">
-                        <label for="ssq-draw-blue">蓝球（1个）</label>
-                        <input type="text" id="ssq-draw-blue" placeholder="例如：9">
-                    </div>
-                    <button class="btn" onclick="saveDrawNumbers('ssq')">保存</button>
-                </div>
-            </div>
-            
-            <button class="btn btn-draw" onclick="drawLottery('ssq')">开奖</button>
-            
-            <div class="result-container" id="ssq-result">
-                <div class="result-title">开奖结果</div>
-                <div class="result-balls" id="ssq-result-balls"></div>
-                <div class="result-info">您的中奖情况：<span class="prize" id="ssq-prize"></span></div>
-                <div class="result-info">中奖金额：<span class="prize" id="ssq-amount"></span></div>
-            </div>
-        </div>
-        
-        <!-- 大乐透模拟器 -->
-        <div id="dlt-simulator" class="simulator content">
-            <button class="back-btn" onclick="backToHome()">返回首页</button>
-            <h2>大乐透模拟选号</h2>
-            
-            <div class="alert" id="dlt-alert"></div>
-            
-            <div class="control-panel">
-                <button class="btn" onclick="randomSelect('dlt-front', 5)">机选前区</button>
-                <button class="btn" onclick="randomSelect('dlt-back', 2)">机选后区</button>
-                <button class="btn" onclick="randomSelectAll('dlt')">机选一注</button>
-                <button class="btn" onclick="batchRandomSelect('dlt', 5)">机选5注</button>
-                <button class="btn btn-reset" onclick="resetSelection('dlt')">重置</button>
-            </div>
-            
-            <h3>前区（选5个，1-35）</h3>
-            <div class="ball-container" id="dlt-front">
-                <!-- 前区1-35 -->
-            </div>
-            
-            <h3>后区（选2个，1-12）</h3>
-            <div class="ball-container" id="dlt-back">
-                <!-- 后区1-12 -->
-            </div>
-            
-            <h3>已选号码</h3>
-            <div class="selected-numbers" id="dlt-selected">
-                <p>前区：<span id="dlt-selected-front"></span></p>
-                <p>后区：<span id="dlt-selected-back"></span></p>
-            </div>
-            
-            <div class="draw-numbers" id="dlt-draw">
-                <div class="draw-title">开奖号码</div>
-                <div class="draw-balls" id="dlt-draw-balls"></div>
-                <div class="edit-draw" onclick="editDrawNumbers('dlt')">修改开奖号码</div>
-                <div class="hidden" id="dlt-draw-edit">
-                    <div class="input-group">
-                        <label for="dlt-draw-front">前区（5个，用空格分隔）</label>
-                        <input type="text" id="dlt-draw-front" placeholder="例如：3 8 15 22 34">
-                    </div>
-                    <div class="input-group">
-                        <label for="dlt-draw-back">后区（2个，用空格分隔）</label>
-                        <input type="text" id="dlt-draw-back" placeholder="例如：5 11">
-                    </div>
-                    <button class="btn" onclick="saveDrawNumbers('dlt')">保存</button>
-                </div>
-            </div>
-            
-            <button class="btn btn-draw" onclick="drawLottery('dlt')">开奖</button>
-            
-            <div class="result-container" id="dlt-result">
-                <div class="result-title">开奖结果</div>
-                <div class="result-balls" id="dlt-result-balls"></div>
-                <div class="result-info">您的中奖情况：<span class="prize" id="dlt-prize"></span></div>
-                <div class="result-info">中奖金额：<span class="prize" id="dlt-amount"></span></div>
-            </div>
-        </div>
-    </div>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>彩票模拟选号开奖系统</title>
+		<link rel="stylesheet" href="css/style.css" />
+	</head>
+	<body>
+		<div class="container">
+			<!-- 首页 -->
+			<div id="home" class="content active">
+				<header>
+					<h1>彩票模拟选号开奖系统</h1>
+					<p>模拟双色球和大乐透选号开奖，结果仅供参考和了解中奖概率</p>
+				</header>
+				<!-- 模拟器入口 -->
+				<div class="nav">
+					<button class="nav-btn" onclick="showSimulator('ssq')">双色球模拟</button>
+					<button class="nav-btn" onclick="showSimulator('dlt')">大乐透模拟</button>
+				</div>
+				<!-- 双色球分析部分 -->
+				<div class="rule">
+					<h3>双色球中奖概率分析（6+1/33+16）</h3>
+					<table>
+						<tr>
+							<th>奖项</th>
+							<th>中奖条件</th>
+							<th>概率计算过程</th>
+							<th>奖金</th>
+						</tr>
+						<tr>
+							<td>一等奖</td>
+							<td>6红+1蓝</td>
+							<td class="probability-formula">C(6,6)×C(27,0)×C(1,1)/C(33,6)×C(16,1) = 1/17,721,088 <span
+									class="probability-result">≈ 0.0000056%</span></td>
+							<td>浮动</td>
+						</tr>
+						<tr>
+							<td>二等奖</td>
+							<td>6红+0蓝</td>
+							<td class="probability-formula">C(6,6)×C(27,0)×C(15,1)/17,721,088 = 15/17,721,088 <span
+									class="probability-result">≈ 0.000085%</span></td>
+							<td>浮动</td>
+						</tr>
+						<tr>
+							<td>三等奖</td>
+							<td>5红+1蓝</td>
+							<td class="probability-formula">C(6,5)×C(27,1)×C(1,1)/17,721,088 = 162/17,721,088 <span
+									class="probability-result">≈ 0.0009%</span></td>
+							<td>3000元</td>
+						</tr>
+						<tr>
+							<td>四等奖</td>
+							<td>5红+0蓝 或 4红+1蓝</td>
+							<td class="probability-formula">[C(6,5)×C(27,1)×C(15,1) + C(6,4)×C(27,2)×C(1,1)]/17,721,088
+								= 7,695/17,721,088 <span class="probability-result">≈ 0.043%</span></td>
+							<td>200元</td>
+						</tr>
+						<tr>
+							<td>五等奖</td>
+							<td>4红+0蓝 或 3红+1蓝</td>
+							<td class="probability-formula">[C(6,4)×C(27,2)×C(15,1) + C(6,3)×C(27,3)×C(1,1)]/17,721,088
+								= 137,475/17,721,088 <span class="probability-result">≈ 0.78%</span></td>
+							<td>10元</td>
+						</tr>
+						<tr>
+							<td>六等奖</td>
+							<td>2红+1蓝 或 1红+1蓝 或 0红+1蓝</td>
+							<td class="probability-formula">[C(6,2)×C(27,4) + C(6,1)×C(27,5) +
+								C(27,6)]×C(1,1)/17,721,088 = 1,043,640/17,721,088 <span class="probability-result">≈
+									5.89%</span></td>
+							<td>5元</td>
+						</tr>
+						<tr>
+							<td>未中奖</td>
+							<td>其他情况</td>
+							<td class="probability-formula">1 - 中奖概率 = 1 - 6.7% <span class="probability-result">≈
+									93.3%</span></td>
+							<td>0元</td>
+						</tr>
+					</table>
+					<p class="probability-sum">总中奖概率 = 0.0000056% + 0.000085% + 0.0009% + 0.043% + 0.78% + 5.89% =
+						<strong>6.7%</strong></p>
+				</div>
+				<!-- 大乐透分析部分 -->
+				<div class="rule">
+					<h3>大乐透中奖概率分析（5+2/35+12）</h3>
+					<table>
+						<tr>
+							<th>奖项</th>
+							<th>中奖条件</th>
+							<th>概率计算过程</th>
+							<th>奖金</th>
+						</tr>
+						<tr>
+							<td>一等奖</td>
+							<td>5红+2蓝</td>
+							<td class="probability-formula">C(5,5)×C(30,0)×C(2,2)×C(10,0)/C(35,5)×C(12,2) = 1/21,425,712
+								<span class="probability-result">≈ 0.0000047%</span></td>
+							<td>浮动</td>
+						</tr>
+						<tr>
+							<td>二等奖</td>
+							<td>5红+1蓝</td>
+							<td class="probability-formula">C(5,5)×C(30,0)×C(2,1)×C(10,1)/21,425,712 = 20/21,425,712
+								<span class="probability-result">≈ 0.000093%</span></td>
+							<td>浮动</td>
+						</tr>
+						<tr>
+							<td>三等奖</td>
+							<td>5红+0蓝</td>
+							<td class="probability-formula">C(5,5)×C(30,0)×C(2,0)×C(10,2)/21,425,712 = 45/21,425,712
+								<span class="probability-result">≈ 0.00021%</span></td>
+							<td>10000元</td>
+						</tr>
+						<tr>
+							<td>四等奖</td>
+							<td>4红+2蓝</td>
+							<td class="probability-formula">C(5,4)×C(30,1)×C(2,2)×C(10,0)/21,425,712 = 150/21,425,712
+								<span class="probability-result">≈ 0.0007%</span></td>
+							<td>3000元</td>
+						</tr>
+						<tr>
+							<td>五等奖</td>
+							<td>4红+1蓝</td>
+							<td class="probability-formula">C(5,4)×C(30,1)×C(2,1)×C(10,1)/21,425,712 = 1,500/21,425,712
+								<span class="probability-result">≈ 0.007%</span></td>
+							<td>300元</td>
+						</tr>
+						<tr>
+							<td>六等奖</td>
+							<td>3红+2蓝</td>
+							<td class="probability-formula">C(5,3)×C(30,2)×C(2,2)×C(10,0)/21,425,712 = 4,350/21,425,712
+								<span class="probability-result">≈ 0.020%</span></td>
+							<td>200元</td>
+						</tr>
+						<tr>
+							<td>七等奖</td>
+							<td>4红+0蓝</td>
+							<td class="probability-formula">C(5,4)×C(30,1)×C(2,0)×C(10,2)/21,425,712 = 6,750/21,425,712
+								<span class="probability-result">≈ 0.032%</span></td>
+							<td>100元</td>
+						</tr>
+						<tr>
+							<td>八等奖</td>
+							<td>3红+1蓝 或 2红+2蓝</td>
+							<td class="probability-formula">[C(5,3)×C(30,2)×C(2,1)×C(10,1) +
+								C(5,2)×C(30,3)×C(2,2)×C(10,0)]/21,425,712 = 108,600/21,425,712 <span
+									class="probability-result">≈ 0.51%</span></td>
+							<td>15元</td>
+						</tr>
+						<tr>
+							<td>九等奖</td>
+							<td>3红+0蓝 或 1红+2蓝 或 2红+1蓝 或 0红+2蓝</td>
+							<td class="probability-formula">[C(5,3)×C(30,2)×C(2,0)×C(10,2) +
+								C(5,1)×C(30,4)×C(2,2)×C(10,0) + C(5,2)×C(30,3)×C(2,1)×C(10,1) +
+								C(5,0)×C(30,5)×C(2,2)×C(10,0)]/21,425,712 = 783,000/21,425,712 <span
+									class="probability-result">≈ 3.66%</span></td>
+							<td>5元</td>
+						</tr>
+						<tr>
+							<td>未中奖</td>
+							<td>其他情况</td>
+							<td class="probability-formula">1 - 中奖概率 = 1 - 4.24% <span class="probability-result">≈
+									95.76%</span></td>
+							<td>0元</td>
+						</tr>
+					</table>
+					<p class="probability-sum">总中奖概率 = 0.0000047% + 0.000093% + 0.00021% + 0.0007% + 0.007% + 0.020% +
+						0.032% + 0.51% + 3.66% = <strong>4.24%</strong></p>
+				</div>
+				
+				<div class="conclusion">
+					<h3>关键总结</h3>
+					<ul>
+						<li><strong>双色球</strong>：一等奖概率约 <strong>1/1772万</strong>，六等奖(5元)概率最高(5.6%)，总中奖概率约6.7%</li>
+						<li><strong>大乐透</strong>：一等奖概率约 <strong>1/2142万</strong>，九等奖(5元)概率最高(3.66%)，总中奖概率约4.24%</li>
+						<li><strong>对比</strong>：双色球中小奖相对更容易，大乐透大奖奖金相对更高</li>
+					</ul>
+					<a href="#">回到顶部</a>
+				</div>
+			</div>
+			
+			<!-- 双色球模拟器 -->
+			<div id="ssq-simulator" class="simulator">
+				<button class="back-btn" onclick="backToHome()">返回首页</button>
+				<h2>双色球模拟选号</h2>
 
-    <script>
-        // 初始化页面
-        document.addEventListener('DOMContentLoaded', function() {
-            initBalls('ssq-red', 33, 'red-ball');
-            initBalls('ssq-blue', 16, 'blue-ball');
-            initBalls('dlt-front', 35, 'red-ball');
-            initBalls('dlt-back', 12, 'blue-ball');
-        });
-        
-        // 显示模拟器
-        function showSimulator(type) {
-            document.getElementById('home').classList.remove('active');
-            document.getElementById('ssq-simulator').classList.remove('active');
-            document.getElementById('dlt-simulator').classList.remove('active');
-            
-            document.getElementById(type + '-simulator').classList.add('active');
-            
-            // 重置开奖结果
-            document.getElementById(type + '-result').style.display = 'none';
-        }
-        
-        // 返回首页
-        function backToHome() {
-            document.getElementById('home').classList.add('active');
-            document.getElementById('ssq-simulator').classList.remove('active');
-            document.getElementById('dlt-simulator').classList.remove('active');
-        }
-        
-        // 初始化号码球
-        function initBalls(containerId, max, ballClass) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            
-            for (let i = 1; i <= max; i++) {
-                const ball = document.createElement('div');
-                ball.className = `ball ${ballClass}`;
-                ball.textContent = i < 10 ? '0' + i : i;
-                ball.dataset.number = i;
-                ball.addEventListener('click', function() {
-                    toggleBallSelection(this, containerId);
-                });
-                container.appendChild(ball);
-            }
-        }
-        
-        // 切换号码球选择状态
-        function toggleBallSelection(ball, containerId) {
-            const type = containerId.split('-')[0];
-            const isFrontOrRed = containerId.includes('front') || containerId.includes('red');
-            const maxSelect = isFrontOrRed ? (type === 'ssq' ? 6 : 5) : (type === 'ssq' ? 1 : 2);
-            
-            const selectedBalls = document.querySelectorAll(`#${containerId} .selected`);
-            
-            if (ball.classList.contains('selected')) {
-                ball.classList.remove('selected');
-            } else {
-                if (selectedBalls.length >= maxSelect) {
-                    showAlert(type, `最多只能选择${maxSelect}个号码`);
-                    return;
-                }
-                ball.classList.add('selected');
-            }
-            
-            updateSelectedNumbers(type);
-        }
-        
-        // 更新已选号码显示
-        function updateSelectedNumbers(type) {
-            if (type === 'ssq') {
-                const redBalls = Array.from(document.querySelectorAll('#ssq-red .selected')).map(b => b.textContent);
-                const blueBalls = Array.from(document.querySelectorAll('#ssq-blue .selected')).map(b => b.textContent);
-                
-                document.getElementById('ssq-selected-red').textContent = redBalls.join(' ');
-                document.getElementById('ssq-selected-blue').textContent = blueBalls.join(' ');
-            } else {
-                const frontBalls = Array.from(document.querySelectorAll('#dlt-front .selected')).map(b => b.textContent);
-                const backBalls = Array.from(document.querySelectorAll('#dlt-back .selected')).map(b => b.textContent);
-                
-                document.getElementById('dlt-selected-front').textContent = frontBalls.join(' ');
-                document.getElementById('dlt-selected-back').textContent = backBalls.join(' ');
-            }
-        }
-        
-        // 随机选择号码
-        function randomSelect(containerId, count) {
-            const container = document.getElementById(containerId);
-            const balls = container.querySelectorAll('.ball');
-            const selectedBalls = container.querySelectorAll('.selected');
-            
-            // 先清除已选
-            selectedBalls.forEach(ball => {
-                ball.classList.remove('selected');
-            });
-            
-            // 随机选择
-            const availableBalls = Array.from(balls);
-            for (let i = 0; i < count; i++) {
-                const randomIndex = Math.floor(Math.random() * availableBalls.length);
-                availableBalls[randomIndex].classList.add('selected');
-                availableBalls.splice(randomIndex, 1);
-            }
-            
-            const type = containerId.split('-')[0];
-            updateSelectedNumbers(type);
-        }
-        
-        // 随机选择一注
-        function randomSelectAll(type) {
-            if (type === 'ssq') {
-                randomSelect('ssq-red', 6);
-                randomSelect('ssq-blue', 1);
-            } else {
-                randomSelect('dlt-front', 5);
-                randomSelect('dlt-back', 2);
-            }
-        }
-        
-        // 批量随机选择
-        function batchRandomSelect(type, count) {
-            for (let i = 0; i < count; i++) {
-                setTimeout(() => {
-                    randomSelectAll(type);
-                }, i * 300);
-            }
-        }
-        
-        // 重置选择
-        function resetSelection(type) {
-            if (type === 'ssq') {
-                document.querySelectorAll('#ssq-red .selected, #ssq-blue .selected').forEach(ball => {
-                    ball.classList.remove('selected');
-                });
-                document.getElementById('ssq-selected-red').textContent = '';
-                document.getElementById('ssq-selected-blue').textContent = '';
-                document.getElementById('ssq-result').style.display = 'none';
-                document.getElementById('ssq-alert').style.display = 'none';
-            } else {
-                document.querySelectorAll('#dlt-front .selected, #dlt-back .selected').forEach(ball => {
-                    ball.classList.remove('selected');
-                });
-                document.getElementById('dlt-selected-front').textContent = '';
-                document.getElementById('dlt-selected-back').textContent = '';
-                document.getElementById('dlt-result').style.display = 'none';
-                document.getElementById('dlt-alert').style.display = 'none';
-            }
-        }
-        
-        // 编辑开奖号码
-        function editDrawNumbers(type) {
-            document.getElementById(`${type}-draw-balls`).classList.add('hidden');
-            document.getElementById(`${type}-draw-edit`).classList.remove('hidden');
-            document.querySelector(`#${type}-draw .edit-draw`).classList.add('hidden');
-        }
-        
-        // 保存开奖号码
-        function saveDrawNumbers(type) {
-            if (type === 'ssq') {
-                const redInput = document.getElementById('ssq-draw-red').value.trim();
-                const blueInput = document.getElementById('ssq-draw-blue').value.trim();
-                
-                if (!redInput || !blueInput) {
-                    showAlert(type, '请输入完整的开奖号码');
-                    return;
-                }
-                
-                const redBalls = redInput.split(/\s+/).map(num => parseInt(num));
-                const blueBall = parseInt(blueInput);
-                
-                if (redBalls.length !== 6 || redBalls.some(num => isNaN(num) || num < 1 || num > 33)) {
-                    showAlert(type, '红球必须是6个1-33的数字');
-                    return;
-                }
-                
-                if (isNaN(blueBall) || blueBall < 1 || blueBall > 16) {
-                    showAlert(type, '蓝球必须是1个1-16的数字');
-                    return;
-                }
-                
-                // 显示开奖号码
-                displayDrawNumbers(type, redBalls, [blueBall]);
-            } else {
-                const frontInput = document.getElementById('dlt-draw-front').value.trim();
-                const backInput = document.getElementById('dlt-draw-back').value.trim();
-                
-                if (!frontInput || !backInput) {
-                    showAlert(type, '请输入完整的开奖号码');
-                    return;
-                }
-                
-                const frontBalls = frontInput.split(/\s+/).map(num => parseInt(num));
-                const backBalls = backInput.split(/\s+/).map(num => parseInt(num));
-                
-                if (frontBalls.length !== 5 || frontBalls.some(num => isNaN(num) || num < 1 || num > 35)) {
-                    showAlert(type, '前区必须是5个1-35的数字');
-                    return;
-                }
-                
-                if (backBalls.length !== 2 || backBalls.some(num => isNaN(num) || num < 1 || num > 12)) {
-                    showAlert(type, '后区必须是2个1-12的数字');
-                    return;
-                }
-                
-                // 显示开奖号码
-                displayDrawNumbers(type, frontBalls, backBalls);
-            }
-            
-            document.getElementById(`${type}-draw-balls`).classList.remove('hidden');
-            document.getElementById(`${type}-draw-edit`).classList.add('hidden');
-            document.querySelector(`#${type}-draw .edit-draw`).classList.remove('hidden');
-        }
-        
-        // 显示开奖号码
-        function displayDrawNumbers(type, mainBalls, extraBalls) {
-            const container = document.getElementById(`${type}-draw-balls`);
-            container.innerHTML = '';
-            
-            mainBalls.forEach(num => {
-                const ball = document.createElement('div');
-                ball.className = `ball ${type === 'ssq' ? 'red-ball' : 'red-ball'}`;
-                ball.textContent = num < 10 ? '0' + num : num;
-                container.appendChild(ball);
-            });
-            
-            extraBalls.forEach(num => {
-                const ball = document.createElement('div');
-                ball.className = `ball ${type === 'ssq' ? 'blue-ball' : 'blue-ball'}`;
-                ball.textContent = num < 10 ? '0' + num : num;
-                container.appendChild(ball);
-            });
-            
-            // 保存到数据集
-            container.dataset.mainBalls = mainBalls.join(',');
-            container.dataset.extraBalls = extraBalls.join(',');
-        }
-        
-        // 开奖
-        function drawLottery(type) {
-            // 检查是否已选号
-            const selectedMain = document.querySelectorAll(`#${type}-${type === 'ssq' ? 'red' : 'front'} .selected`);
-            const selectedExtra = document.querySelectorAll(`#${type}-${type === 'ssq' ? 'blue' : 'back'} .selected`);
-            
-            const requiredMain = type === 'ssq' ? 6 : 5;
-            const requiredExtra = type === 'ssq' ? 1 : 2;
-            
-            if (selectedMain.length !== requiredMain || selectedExtra.length !== requiredExtra) {
-                showAlert(type, `请选择${requiredMain}个主区号码和${requiredExtra}个附加区号码`);
-                return;
-            }
-            
-            // 获取开奖号码（如果没有设置则随机生成）
-            const drawContainer = document.getElementById(`${type}-draw-balls`);
-            let mainBalls, extraBalls;
-            
-            if (drawContainer.dataset.mainBalls) {
-                mainBalls = drawContainer.dataset.mainBalls.split(',').map(Number);
-                extraBalls = drawContainer.dataset.extraBalls.split(',').map(Number);
-            } else {
-                // 随机生成开奖号码
-                if (type === 'ssq') {
-                    mainBalls = generateRandomNumbers(1, 33, 6);
-                    extraBalls = generateRandomNumbers(1, 16, 1);
-                } else {
-                    mainBalls = generateRandomNumbers(1, 35, 5);
-                    extraBalls = generateRandomNumbers(1, 12, 2);
-                }
-                displayDrawNumbers(type, mainBalls, extraBalls);
-            }
-            
-            // 获取用户选择的号码
-            const userMainBalls = Array.from(selectedMain).map(b => parseInt(b.textContent));
-            const userExtraBalls = Array.from(selectedExtra).map(b => parseInt(b.textContent));
-            
-            // 比较中奖情况
-            const result = checkPrize(type, userMainBalls, userExtraBalls, mainBalls, extraBalls);
-            
-            // 显示结果
-            showResult(type, mainBalls, extraBalls, result);
-        }
-        
-        // 生成随机号码
-        function generateRandomNumbers(min, max, count) {
-            const numbers = [];
-            while (numbers.length < count) {
-                const num = Math.floor(Math.random() * (max - min + 1)) + min;
-                if (!numbers.includes(num)) {
-                    numbers.push(num);
-                }
-            }
-            return numbers.sort((a, b) => a - b);
-        }
-        
-        // 检查中奖情况
-        function checkPrize(type, userMain, userExtra, drawMain, drawExtra) {
-            // 计算匹配的主区和附加区号码数量
-            const mainMatch = userMain.filter(num => drawMain.includes(num)).length;
-            const extraMatch = userExtra.filter(num => drawExtra.includes(num)).length;
-            
-            if (type === 'ssq') {
-                // 双色球中奖规则
-                if (mainMatch === 6 && extraMatch === 1) return { prize: '一等奖', amount: '500万-1000万' };
-                if (mainMatch === 6 && extraMatch === 0) return { prize: '二等奖', amount: '浮动奖金' };
-                if (mainMatch === 5 && extraMatch === 1) return { prize: '三等奖', amount: '3000元' };
-                if ((mainMatch === 5 && extraMatch === 0) || (mainMatch === 4 && extraMatch === 1)) 
-                    return { prize: '四等奖', amount: '200元' };
-                if ((mainMatch === 4 && extraMatch === 0) || (mainMatch === 3 && extraMatch === 1)) 
-                    return { prize: '五等奖', amount: '10元' };
-                if ((mainMatch === 2 && extraMatch === 1) || (mainMatch === 1 && extraMatch === 1) || (mainMatch === 0 && extraMatch === 1)) 
-                    return { prize: '六等奖', amount: '5元' };
-                return { prize: '未中奖', amount: '0元' };
-            } else {
-                // 大乐透中奖规则
-                if (mainMatch === 5 && extraMatch === 2) return { prize: '一等奖', amount: '浮动奖金（最高1000万）' };
-                if (mainMatch === 5 && extraMatch === 1) return { prize: '二等奖', amount: '浮动奖金' };
-                if (mainMatch === 5 && extraMatch === 0) return { prize: '三等奖', amount: '浮动奖金' };
-                if (mainMatch === 4 && extraMatch === 2) return { prize: '四等奖', amount: '200元' };
-                if (mainMatch === 4 && extraMatch === 1) return { prize: '五等奖', amount: '100元' };
-                if ((mainMatch === 3 && extraMatch === 2) || (mainMatch === 4 && extraMatch === 0)) 
-                    return { prize: '六等奖', amount: '15元' };
-                if ((mainMatch === 3 && extraMatch === 1) || (mainMatch === 2 && extraMatch === 2)) 
-                    return { prize: '七等奖', amount: '10元' };
-                if ((mainMatch === 3 && extraMatch === 0) || (mainMatch === 1 && extraMatch === 2) || 
-                    (mainMatch === 2 && extraMatch === 1) || (mainMatch === 0 && extraMatch === 2)) 
-                    return { prize: '八等奖', amount: '5元' };
-                return { prize: '未中奖', amount: '0元' };
-            }
-        }
-        
-        // 显示中奖结果
-        function showResult(type, mainBalls, extraBalls, result) {
-            const resultContainer = document.getElementById(`${type}-result`);
-            const resultBalls = document.getElementById(`${type}-result-balls`);
-            
-            // 显示开奖号码
-            resultBalls.innerHTML = '';
-            
-            mainBalls.forEach(num => {
-                const ball = document.createElement('div');
-                ball.className = `ball ${type === 'ssq' ? 'red-ball' : 'red-ball'}`;
-                ball.textContent = num < 10 ? '0' + num : num;
-                resultBalls.appendChild(ball);
-            });
-            
-            extraBalls.forEach(num => {
-                const ball = document.createElement('div');
-                ball.className = `ball ${type === 'ssq' ? 'blue-ball' : 'blue-ball'}`;
-                ball.textContent = num < 10 ? '0' + num : num;
-                resultBalls.appendChild(ball);
-            });
-            
-            // 显示中奖信息
-            document.getElementById(`${type}-prize`).textContent = result.prize;
-            document.getElementById(`${type}-amount`).textContent = result.amount;
-            
-            resultContainer.style.display = 'block';
-        }
-        
-        // 显示警告信息
-        function showAlert(type, message) {
-            const alert = document.getElementById(`${type}-alert`);
-            alert.textContent = message;
-            alert.style.display = 'block';
-            
-            setTimeout(() => {
-                alert.style.display = 'none';
-            }, 3000);
-        }
-    </script>
-</body>
+				<div class="alert" id="ssq-alert"></div>
+
+				<div class="control-panel">
+					<button class="btn" onclick="randomSelect('ssq-red', 6)">机选红球</button>
+					<button class="btn" onclick="randomSelect('ssq-blue', 1)">机选蓝球</button>
+					<button class="btn" onclick="randomSelectAll('ssq')">机选一注</button>
+					<button class="btn" onclick="batchRandomSelect('ssq', 5)">机选5注</button>
+					<button class="btn btn-reset" onclick="resetSelection('ssq')">重置</button>
+				</div>
+
+				<h3>红球区（选6个）</h3>
+				<div class="ball-container" id="ssq-red">
+					<!-- 红球1-33 -->
+				</div>
+
+				<h3>蓝球区（选1个）</h3>
+				<div class="ball-container" id="ssq-blue">
+					<!-- 蓝球1-16 -->
+				</div>
+
+				<h3>已选号码</h3>
+				<div class="selected-numbers" id="ssq-selected">
+					<p>红球：<span id="ssq-selected-red"></span></p>
+					<p>蓝球：<span id="ssq-selected-blue"></span></p>
+				</div>
+
+				<div class="draw-numbers" id="ssq-draw">
+					<div class="draw-title">开奖号码</div>
+					<div class="draw-balls" id="ssq-draw-balls"></div>
+					<div class="edit-draw" onclick="editDrawNumbers('ssq')">修改开奖号码</div>
+					<div class="hidden" id="ssq-draw-edit">
+						<div class="input-group">
+							<label for="ssq-draw-red">红球（6个，用空格分隔）</label>
+							<input type="text" id="ssq-draw-red" placeholder="例如：1 5 12 18 25 33">
+						</div>
+						<div class="input-group">
+							<label for="ssq-draw-blue">蓝球（1个）</label>
+							<input type="text" id="ssq-draw-blue" placeholder="例如：9">
+						</div>
+						<button class="btn" onclick="saveDrawNumbers('ssq')">保存</button>
+					</div>
+				</div>
+
+				<button class="btn btn-draw" onclick="drawLottery('ssq')">开奖</button>
+
+				<div class="result-container" id="ssq-result">
+					<div class="result-title">开奖结果</div>
+					<div class="result-balls" id="ssq-result-balls"></div>
+					<div class="result-info">您的中奖情况：<span class="prize" id="ssq-prize"></span></div>
+					<div class="result-info">中奖金额：<span class="prize" id="ssq-amount"></span></div>
+				</div>
+			</div>
+			<!-- 大乐透模拟器 -->
+			<div id="dlt-simulator" class="simulator">
+				<button class="back-btn" onclick="backToHome()">返回首页</button>
+				<h2>大乐透模拟选号</h2>
+
+				<div class="alert" id="dlt-alert"></div>
+
+				<div class="control-panel">
+					<button class="btn" onclick="randomSelect('dlt-front', 5)">机选前区</button>
+					<button class="btn" onclick="randomSelect('dlt-back', 2)">机选后区</button>
+					<button class="btn" onclick="randomSelectAll('dlt')">机选一注</button>
+					<button class="btn" onclick="batchRandomSelect('dlt', 5)">机选5注</button>
+					<button class="btn btn-reset" onclick="resetSelection('dlt')">重置</button>
+				</div>
+
+				<h3>前区（选5个，1-35）</h3>
+				<div class="ball-container" id="dlt-front">
+					<!-- 前区1-35 -->
+				</div>
+
+				<h3>后区（选2个，1-12）</h3>
+				<div class="ball-container" id="dlt-back">
+					<!-- 后区1-12 -->
+				</div>
+
+				<h3>已选号码</h3>
+				<div class="selected-numbers" id="dlt-selected">
+					<p>前区：<span id="dlt-selected-front"></span></p>
+					<p>后区：<span id="dlt-selected-back"></span></p>
+				</div>
+
+				<div class="draw-numbers" id="dlt-draw">
+					<div class="draw-title">开奖号码</div>
+					<div class="draw-balls" id="dlt-draw-balls"></div>
+					<div class="edit-draw" onclick="editDrawNumbers('dlt')">修改开奖号码</div>
+					<div class="hidden" id="dlt-draw-edit">
+						<div class="input-group">
+							<label for="dlt-draw-front">前区（5个，用空格分隔）</label>
+							<input type="text" id="dlt-draw-front" placeholder="例如：3 8 15 22 34">
+						</div>
+						<div class="input-group">
+							<label for="dlt-draw-back">后区（2个，用空格分隔）</label>
+							<input type="text" id="dlt-draw-back" placeholder="例如：5 11">
+						</div>
+						<button class="btn" onclick="saveDrawNumbers('dlt')">保存</button>
+					</div>
+				</div>
+
+				<button class="btn btn-draw" onclick="drawLottery('dlt')">开奖</button>
+
+				<div class="result-container" id="dlt-result">
+					<div class="result-title">开奖结果</div>
+					<div class="result-balls" id="dlt-result-balls"></div>
+					<div class="result-info">您的中奖情况：<span class="prize" id="dlt-prize"></span></div>
+					<div class="result-info">中奖金额：<span class="prize" id="dlt-amount"></span></div>
+				</div>
+			</div>
+		</div>
+		<script src="js/script.js"></script>
+	</body>
 </html>
