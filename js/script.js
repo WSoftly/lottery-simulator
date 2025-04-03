@@ -1,23 +1,3 @@
-// 初始化页面
-document.addEventListener('DOMContentLoaded', function() {
-	initBalls('ssq-red', 33, 'red-ball');
-	initBalls('ssq-blue', 16, 'blue-ball');
-	initBalls('dlt-front', 35, 'red-ball');
-	initBalls('dlt-back', 12, 'blue-ball');
-});
-
-// 显示模拟器
-function showSimulator(type) {
-	document.getElementById('home').classList.remove('active');
-	document.getElementById('ssq-simulator').classList.remove('active');
-	document.getElementById('dlt-simulator').classList.remove('active');
-	
-	document.getElementById(type + '-simulator').classList.add('active');
-	
-	// 重置开奖结果
-	document.getElementById(type + '-result').style.display = 'none';
-}
-
 // 返回首页
 function backToHome() {
 	document.getElementById('home').classList.add('active');
@@ -65,19 +45,66 @@ function toggleBallSelection(ball, containerId) {
 
 // 更新已选号码显示
 function updateSelectedNumbers(type) {
-	if (type === 'ssq') {
+	if(type==='ssq'){
 		const redBalls = Array.from(document.querySelectorAll('#ssq-red .selected')).map(b => b.textContent);
 		const blueBalls = Array.from(document.querySelectorAll('#ssq-blue .selected')).map(b => b.textContent);
-		
 		document.getElementById('ssq-selected-red').textContent = redBalls.join(' ');
 		document.getElementById('ssq-selected-blue').textContent = blueBalls.join(' ');
-	} else {
-		const frontBalls = Array.from(document.querySelectorAll('#dlt-front .selected')).map(b => b.textContent);
-		const backBalls = Array.from(document.querySelectorAll('#dlt-back .selected')).map(b => b.textContent);
-		
-		document.getElementById('dlt-selected-front').textContent = frontBalls.join(' ');
-		document.getElementById('dlt-selected-back').textContent = backBalls.join(' ');
+		if(redBalls.length==6&&blueBalls.length==1){
+			document.getElementById('ssq-confirm').classList.remove('content');
+		}else{
+			document.getElementById('ssq-confirm').classList.add('content');
+		}
+	}else{
+		const redBalls = Array.from(document.querySelectorAll('#dlt-front .selected')).map(b => b.textContent);
+		const blueBalls = Array.from(document.querySelectorAll('#dlt-back .selected')).map(b => b.textContent);
+		document.getElementById('dlt-selected-front').textContent = redBalls.join(' ');
+		document.getElementById('dlt-selected-back').textContent = blueBalls.join(' ');
+		if(redBalls.length==5&&blueBalls.length==2){
+			document.getElementById('dlt-confirm').classList.remove('content');
+		}else{
+			document.getElementById('dlt-confirm').classList.add('content');
+		}
 	}
+}
+function Confirm(type){
+	// 生成一注选定号码卡片
+	const oCard=document.createElement('p');
+	oCard.className="card";
+	if(type==='ssq'){
+		const oSelected=document.getElementById('ssq-selected');
+		const oRed=document.getElementById('ssq-selected-red');
+		const oBlue=document.getElementById('ssq-selected-blue');
+		oCard.textContent=oRed.textContent+'+'+oBlue.textContent;
+		oSelected.appendChild(oCard);
+	}else{
+		const oSelected=document.getElementById('dlt-selected');
+		const oRed=document.getElementById('dlt-selected-front');
+		const oBlue=document.getElementById('dlt-selected-back');
+		oCard.textContent=oRed.textContent+'+'+oBlue.textContent;
+		oSelected.appendChild(oCard);
+	}
+	resetSelection(type);
+}
+
+// 初始化页面
+document.addEventListener('DOMContentLoaded', function() {
+	initBalls('ssq-red', 33, 'red-ball');
+	initBalls('ssq-blue', 16, 'blue-ball');
+	initBalls('dlt-front', 35, 'red-ball');
+	initBalls('dlt-back', 12, 'blue-ball');
+});
+
+// 显示模拟器
+function showSimulator(type) {
+	document.getElementById('home').classList.remove('active');
+	document.getElementById('ssq-simulator').classList.remove('active');
+	document.getElementById('dlt-simulator').classList.remove('active');
+	
+	document.getElementById(type + '-simulator').classList.add('active');
+	
+	// 重置开奖结果
+	// document.getElementById(type + '-result').style.display = 'none';
 }
 
 // 随机选择号码
@@ -129,19 +156,12 @@ function resetSelection(type) {
 		document.querySelectorAll('#ssq-red .selected, #ssq-blue .selected').forEach(ball => {
 			ball.classList.remove('selected');
 		});
-		document.getElementById('ssq-selected-red').textContent = '';
-		document.getElementById('ssq-selected-blue').textContent = '';
-		document.getElementById('ssq-result').style.display = 'none';
-		document.getElementById('ssq-alert').style.display = 'none';
 	} else {
 		document.querySelectorAll('#dlt-front .selected, #dlt-back .selected').forEach(ball => {
 			ball.classList.remove('selected');
 		});
-		document.getElementById('dlt-selected-front').textContent = '';
-		document.getElementById('dlt-selected-back').textContent = '';
-		document.getElementById('dlt-result').style.display = 'none';
-		document.getElementById('dlt-alert').style.display = 'none';
 	}
+	updateSelectedNumbers(type);
 }
 
 // 编辑开奖号码
