@@ -1,8 +1,31 @@
+// 显示模拟器
+function showSimulator(type) {
+	document.getElementById('home').classList.remove('active');
+	document.getElementById('ssq-simulator').classList.remove('active');
+	document.getElementById('dlt-simulator').classList.remove('active');
+	
+	document.getElementById(type + '-simulator').classList.add('active');
+	
+	// 重置开奖结果
+	// document.getElementById(type + '-result').style.display = 'none';
+}
+
 // 返回首页
 function backToHome() {
 	document.getElementById('home').classList.add('active');
 	document.getElementById('ssq-simulator').classList.remove('active');
 	document.getElementById('dlt-simulator').classList.remove('active');
+}
+
+// 显示警告信息
+function showAlert(type, message) {
+	const alert = document.getElementById(`${type}-alert`);
+	alert.textContent = message;
+	alert.style.display = 'block';
+	
+	setTimeout(() => {
+		alert.style.display = 'none';
+	}, 3000);
 }
 
 // 初始化号码球
@@ -26,8 +49,7 @@ function initBalls(containerId, max, ballClass) {
 function toggleBallSelection(ball, containerId) {
 	const type = containerId.split('-')[0];
 	const isFrontOrRed = containerId.includes('front') || containerId.includes('red');
-	const maxSelect = isFrontOrRed ? (type === 'ssq' ? 6 : 5) : (type === 'ssq' ? 1 : 2);
-	
+	const maxSelect = isFrontOrRed ? (type === 'ssq' ? 6 : 5) : (type === 'ssq' ? 1 : 2);	
 	const selectedBalls = document.querySelectorAll(`#${containerId} .selected`);
 	
 	if (ball.classList.contains('selected')) {
@@ -45,66 +67,52 @@ function toggleBallSelection(ball, containerId) {
 
 // 更新已选号码显示
 function updateSelectedNumbers(type) {
-	if(type==='ssq'){
-		const redBalls = Array.from(document.querySelectorAll('#ssq-red .selected')).map(b => b.textContent);
-		const blueBalls = Array.from(document.querySelectorAll('#ssq-blue .selected')).map(b => b.textContent);
-		document.getElementById('ssq-selected-red').textContent = redBalls.join(' ');
-		document.getElementById('ssq-selected-blue').textContent = blueBalls.join(' ');
-		if(redBalls.length==6&&blueBalls.length==1){
-			document.getElementById('ssq-confirm').classList.remove('content');
-		}else{
-			document.getElementById('ssq-confirm').classList.add('content');
-		}
+	const redBalls = Array.from(document.querySelectorAll(`#${type}-${type === 'ssq' ? 'red' : 'front'} .selected`)).map(b => b.textContent);
+	const blueBalls = Array.from(document.querySelectorAll(`#${type}-${type === 'ssq' ? 'blue' : 'back'} .selected`)).map(b => b.textContent);
+	document.getElementById(`${type}-selected-${type === 'ssq' ? 'red' : 'front'}`).textContent = redBalls.join(' ');
+	document.getElementById(`${type}-selected-${type === 'ssq' ? 'blue' : 'back'}`).textContent = blueBalls.join(' ');
+	if(redBalls.length==(type==='ssq'?6:5)&&blueBalls.length==(type==='ssq'?1:2)){
+		document.getElementById(`${type}-confirm`).classList.remove('content');
 	}else{
-		const redBalls = Array.from(document.querySelectorAll('#dlt-front .selected')).map(b => b.textContent);
-		const blueBalls = Array.from(document.querySelectorAll('#dlt-back .selected')).map(b => b.textContent);
-		document.getElementById('dlt-selected-front').textContent = redBalls.join(' ');
-		document.getElementById('dlt-selected-back').textContent = blueBalls.join(' ');
-		if(redBalls.length==5&&blueBalls.length==2){
-			document.getElementById('dlt-confirm').classList.remove('content');
-		}else{
-			document.getElementById('dlt-confirm').classList.add('content');
-		}
+		document.getElementById(`${type}-confirm`).classList.add('content');
 	}
 }
-function Confirm(type){
+// 更新已选号码注数
+function SNumber(type){
+	document.getElementById(`${type}-sum-number`).textContent=document.getElementsByClassName(`${type}-card`).length;
+}
+function ConfirmNumber(type){
 	// 生成一注选定号码卡片
 	const oCard=document.createElement('p');
-	oCard.className="card";
+	oCard.classList=`card ${type}-card`;
+	oCard.addEventListener('dblclick',function(e){
+		e.target.remove();
+		showAlert(type,'已删除一注号码！');
+		SNumber(type);
+	})
 	if(type==='ssq'){
 		const oSelected=document.getElementById('ssq-selected');
 		const oRed=document.getElementById('ssq-selected-red');
 		const oBlue=document.getElementById('ssq-selected-blue');
-		oCard.textContent=oRed.textContent+'+'+oBlue.textContent;
-		oSelected.appendChild(oCard);
+		if(oRed.textContent==''||oBlue.textContent==''){
+			return;
+		}else{
+			oCard.textContent=oRed.textContent+'+'+oBlue.textContent;
+			oSelected.appendChild(oCard);
+		}
 	}else{
 		const oSelected=document.getElementById('dlt-selected');
 		const oRed=document.getElementById('dlt-selected-front');
 		const oBlue=document.getElementById('dlt-selected-back');
-		oCard.textContent=oRed.textContent+'+'+oBlue.textContent;
-		oSelected.appendChild(oCard);
+		if(oRed.textContent==''||oBlue.textContent==''){
+			return;
+		}else{
+			oCard.textContent=oRed.textContent+'+'+oBlue.textContent;
+			oSelected.appendChild(oCard);
+		}
 	}
 	resetSelection(type);
-}
-
-// 初始化页面
-document.addEventListener('DOMContentLoaded', function() {
-	initBalls('ssq-red', 33, 'red-ball');
-	initBalls('ssq-blue', 16, 'blue-ball');
-	initBalls('dlt-front', 35, 'red-ball');
-	initBalls('dlt-back', 12, 'blue-ball');
-});
-
-// 显示模拟器
-function showSimulator(type) {
-	document.getElementById('home').classList.remove('active');
-	document.getElementById('ssq-simulator').classList.remove('active');
-	document.getElementById('dlt-simulator').classList.remove('active');
-	
-	document.getElementById(type + '-simulator').classList.add('active');
-	
-	// 重置开奖结果
-	// document.getElementById(type + '-result').style.display = 'none';
+	SNumber(type);
 }
 
 // 随机选择号码
@@ -125,7 +133,6 @@ function randomSelect(containerId, count) {
 		availableBalls[randomIndex].classList.add('selected');
 		availableBalls.splice(randomIndex, 1);
 	}
-	
 	const type = containerId.split('-')[0];
 	updateSelectedNumbers(type);
 }
@@ -139,6 +146,9 @@ function randomSelectAll(type) {
 		randomSelect('dlt-front', 5);
 		randomSelect('dlt-back', 2);
 	}
+	setTimeout(() => {
+		ConfirmNumber(type);
+	}, 300);
 }
 
 // 批量随机选择
@@ -146,12 +156,12 @@ function batchRandomSelect(type, count) {
 	for (let i = 0; i < count; i++) {
 		setTimeout(() => {
 			randomSelectAll(type);
-		}, i * 300);
+		}, i * 500);
 	}
 }
 
-// 重置选择
-function resetSelection(type) {
+//重置选号
+function resetNumber(type){
 	if (type === 'ssq') {
 		document.querySelectorAll('#ssq-red .selected, #ssq-blue .selected').forEach(ball => {
 			ball.classList.remove('selected');
@@ -161,96 +171,25 @@ function resetSelection(type) {
 			ball.classList.remove('selected');
 		});
 	}
+}
+// 重置选择
+function resetSelection(type) {
+	resetNumber(type);
 	updateSelectedNumbers(type);
 }
 
-// 编辑开奖号码
-function editDrawNumbers(type) {
-	document.getElementById(`${type}-draw-balls`).classList.add('hidden');
-	document.getElementById(`${type}-draw-edit`).classList.remove('hidden');
-	document.querySelector(`#${type}-draw .edit-draw`).classList.add('hidden');
-}
+// 初始化页面
+document.addEventListener('DOMContentLoaded', function() {
+	initBalls('ssq-red', 33, 'red-ball');
+	initBalls('ssq-blue', 16, 'blue-ball');
+	initBalls('dlt-front', 35, 'red-ball');
+	initBalls('dlt-back', 12, 'blue-ball');
+});
 
-// 保存开奖号码
-function saveDrawNumbers(type) {
-	if (type === 'ssq') {
-		const redInput = document.getElementById('ssq-draw-red').value.trim();
-		const blueInput = document.getElementById('ssq-draw-blue').value.trim();
-		
-		if (!redInput || !blueInput) {
-			showAlert(type, '请输入完整的开奖号码');
-			return;
-		}
-		
-		const redBalls = redInput.split(/\s+/).map(num => parseInt(num));
-		const blueBall = parseInt(blueInput);
-		
-		if (redBalls.length !== 6 || redBalls.some(num => isNaN(num) || num < 1 || num > 33)) {
-			showAlert(type, '红球必须是6个1-33的数字');
-			return;
-		}
-		
-		if (isNaN(blueBall) || blueBall < 1 || blueBall > 16) {
-			showAlert(type, '蓝球必须是1个1-16的数字');
-			return;
-		}
-		
-		// 显示开奖号码
-		displayDrawNumbers(type, redBalls, [blueBall]);
-	} else {
-		const frontInput = document.getElementById('dlt-draw-front').value.trim();
-		const backInput = document.getElementById('dlt-draw-back').value.trim();
-		
-		if (!frontInput || !backInput) {
-			showAlert(type, '请输入完整的开奖号码');
-			return;
-		}
-		
-		const frontBalls = frontInput.split(/\s+/).map(num => parseInt(num));
-		const backBalls = backInput.split(/\s+/).map(num => parseInt(num));
-		
-		if (frontBalls.length !== 5 || frontBalls.some(num => isNaN(num) || num < 1 || num > 35)) {
-			showAlert(type, '前区必须是5个1-35的数字');
-			return;
-		}
-		
-		if (backBalls.length !== 2 || backBalls.some(num => isNaN(num) || num < 1 || num > 12)) {
-			showAlert(type, '后区必须是2个1-12的数字');
-			return;
-		}
-		
-		// 显示开奖号码
-		displayDrawNumbers(type, frontBalls, backBalls);
-	}
-	
-	document.getElementById(`${type}-draw-balls`).classList.remove('hidden');
-	document.getElementById(`${type}-draw-edit`).classList.add('hidden');
-	document.querySelector(`#${type}-draw .edit-draw`).classList.remove('hidden');
-}
 
-// 显示开奖号码
-function displayDrawNumbers(type, mainBalls, extraBalls) {
-	const container = document.getElementById(`${type}-draw-balls`);
-	container.innerHTML = '';
-	
-	mainBalls.forEach(num => {
-		const ball = document.createElement('div');
-		ball.className = `ball ${type === 'ssq' ? 'red-ball' : 'red-ball'}`;
-		ball.textContent = num < 10 ? '0' + num : num;
-		container.appendChild(ball);
-	});
-	
-	extraBalls.forEach(num => {
-		const ball = document.createElement('div');
-		ball.className = `ball ${type === 'ssq' ? 'blue-ball' : 'blue-ball'}`;
-		ball.textContent = num < 10 ? '0' + num : num;
-		container.appendChild(ball);
-	});
-	
-	// 保存到数据集
-	container.dataset.mainBalls = mainBalls.join(',');
-	container.dataset.extraBalls = extraBalls.join(',');
-}
+
+
+
 
 // 开奖
 function drawLottery(type) {
@@ -261,10 +200,10 @@ function drawLottery(type) {
 	const requiredMain = type === 'ssq' ? 6 : 5;
 	const requiredExtra = type === 'ssq' ? 1 : 2;
 	
-	if (selectedMain.length !== requiredMain || selectedExtra.length !== requiredExtra) {
-		showAlert(type, `请选择${requiredMain}个主区号码和${requiredExtra}个附加区号码`);
-		return;
-	}
+	// if (selectedMain.length !== requiredMain || selectedExtra.length !== requiredExtra) {
+	// 	showAlert(type, `请选择${requiredMain}个主区号码和${requiredExtra}个附加区号码`);
+	// 	return;
+	// }
 	
 	// 获取开奖号码（如果没有设置则随机生成）
 	const drawContainer = document.getElementById(`${type}-draw-balls`);
@@ -333,22 +272,24 @@ function checkPrize(type, userMain, userExtra, drawMain, drawExtra) {
 	    const matchedReds = ticket.redBalls.filter(num => draw.redBalls.includes(num)).length;
 	    const matchedBlues = ticket.blueBalls.filter(num => draw.blueBalls.includes(num)).length;
 	    
-	    if (matchedReds === 5 && matchedBlues === 2) return "一等奖";
-	    if (matchedReds === 5 && matchedBlues === 1) return "二等奖";
-	    if (matchedReds === 5 && matchedBlues === 0) return "三等奖";
-	    if (matchedReds === 4 && matchedBlues === 2) return "四等奖";
-	    if (matchedReds === 4 && matchedBlues === 1) return "五等奖";
-	    if (matchedReds === 3 && matchedBlues === 2) return "六等奖";
-	    if (matchedReds === 4 && matchedBlues === 0) return "七等奖";
-	    if ((matchedReds === 3 && matchedBlues === 1) || (matchedReds === 2 && matchedBlues === 2)) return "八等奖";
+	    if (matchedReds === 5 && matchedBlues === 2) return { level: "一等奖", prize: "浮动" };
+	    if (matchedReds === 5 && matchedBlues === 1) return { level: "二等奖", prize: "浮动" };
+	    if (matchedReds === 5 && matchedBlues === 0) return { level: "三等奖", prize: "10000元" };
+	    if (matchedReds === 4 && matchedBlues === 2) return { level: "四等奖", prize: "3000元" };
+	    if (matchedReds === 4 && matchedBlues === 1) return { level: "五等奖", prize: "300元" };
+	    if (matchedReds === 3 && matchedBlues === 2) return { level: "六等奖", prize: "200元" };
+	    if (matchedReds === 4 && matchedBlues === 0) return { level: "七等奖", prize: "100元" };
+	    if ((matchedReds === 3 && matchedBlues === 1) || (matchedReds === 2 && matchedBlues === 2)) 
+	        return { level: "八等奖", prize: "15元" };
 	    if ((matchedReds === 3 && matchedBlues === 0) || 
 	        (matchedReds === 1 && matchedBlues === 2) || 
 	        (matchedReds === 2 && matchedBlues === 1) || 
-	        (matchedReds === 0 && matchedBlues === 2)) return "九等奖";
-	    return "未中奖";
+	        (matchedReds === 0 && matchedBlues === 2))
+	        return { level: "九等奖", prize: "5元" };
+	    
+	    return { level: "未中奖", prize: "0元" };
 	}
 }
-
 // 显示中奖结果
 function showResult(type, mainBalls, extraBalls, result) {
 	const resultContainer = document.getElementById(`${type}-result`);
@@ -376,15 +317,4 @@ function showResult(type, mainBalls, extraBalls, result) {
 	document.getElementById(`${type}-amount`).textContent = result.amount;
 	
 	resultContainer.style.display = 'block';
-}
-
-// 显示警告信息
-function showAlert(type, message) {
-	const alert = document.getElementById(`${type}-alert`);
-	alert.textContent = message;
-	alert.style.display = 'block';
-	
-	setTimeout(() => {
-		alert.style.display = 'none';
-	}, 3000);
 }

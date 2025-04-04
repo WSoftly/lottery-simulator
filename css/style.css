@@ -169,7 +169,7 @@ tr {
 	display: block;
 }
 
- .control-panel,.ball-container {
+.control-panel,.ball-container {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 10px;
@@ -250,6 +250,21 @@ tr {
 .s-show{
 	width: 200px;
 }
+.selected-numbers>p{
+	font-size: 1.1em;
+	font-weight: bold;
+	letter-spacing: 0.2em;
+	color: darkgoldenrod;
+	margin-left: 20px;
+}
+.selected-area{
+	position: relative;
+	height: 150px;
+	overflow: auto;
+}
+.selected-area div{
+	position: absolute;
+}
 .card{
 	width: 300px;
 	height: 30px;
@@ -258,11 +273,32 @@ tr {
 	border-radius: 5px;
 	margin: 10px;
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+	cursor: pointer;
+	transition: all 0.3s linear;
 }
-#ssq-selected,#dlt-selected{
-	height: 100px;
-	overflow: auto;
+.card:hover{
+	transform: scale(1.1) translateX(20px);
 }
+
+.draw-numbers {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	margin: 20px 0;
+	padding: 15px;
+	background-color: #e1e1e1;
+	border-radius: 8px;
+}
+
+.draw-title {
+	font-weight: bold;
+}
+
+.draw-balls {
+	gap: 10px;
+}
+
 .result-container {
 	margin-top: 30px;
 	padding: 20px;
@@ -294,57 +330,8 @@ tr {
 	color: #e74c3c;
 }
 
-.draw-numbers {
-	margin: 20px 0;
-	padding: 15px;
-	background-color: #95a5a6;
-	border-radius: 8px;
-	position: relative;
-}
-
-.draw-title {
-	font-weight: bold;
-	margin-bottom: 10px;
-}
-
-.draw-balls {
-	display: flex;
-	gap: 10px;
-	flex-wrap: wrap;
-}
-
-.edit-draw {
-	position: absolute;
-	right: 15px;
-	top: 15px;
-	color: #3498db;
-	cursor: pointer;
-	text-decoration: underline;
-}
-
-.hidden {
-	display: none;
-}
-
-.input-group {
-	margin: 10px 0;
-}
-
-.input-group label {
-	display: block;
-	margin-bottom: 5px;
-	font-weight: bold;
-}
-
-.input-group input {
-	padding: 8px;
-	width: 100%;
-	max-width: 300px;
-	border: 1px solid #ddd;
-	border-radius: 4px;
-}
-
 .alert {
+	width: fit-content;
 	padding: 15px;
 	background-color: #f8d7da;
 	color: #721c24;
@@ -381,15 +368,3 @@ tr {
 	}
 }
 
-
-
-/* .result-card {
-    margin-bottom: 15px;
-    padding: 12px;
-}
-
-
-.prize-amount {
-    font-weight: bold;
-    color: #d63031;
-} */

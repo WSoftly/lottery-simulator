@@ -233,29 +233,21 @@
 						<p>红球：<span id="ssq-selected-red"></span></p>
 						<p>蓝球：<span id="ssq-selected-blue"></span></p>
 					</div>
-					<button id="ssq-confirm" class="btn content" onclick="Confirm('ssq')">确认选号</button>
+					<button id="ssq-confirm" class="btn content" onclick="ConfirmNumber('ssq')">确认选号</button>
+					<p><span id="ssq-sum-number">0</span>注</p>
 				</div>
-				<div id="ssq-selected">
-					
+				<div class="selected-area">
+					<div id="ssq-selected">
+						
+					</div>
 				</div>
 				<div class="draw-numbers" id="ssq-draw">
 					<div class="draw-title">开奖号码</div>
 					<div class="draw-balls" id="ssq-draw-balls"></div>
-					<div class="edit-draw" onclick="editDrawNumbers('ssq')">修改开奖号码</div>
-					<div class="hidden" id="ssq-draw-edit">
-						<div class="input-group">
-							<label for="ssq-draw-red">红球（6个，用空格分隔）</label>
-							<input type="text" id="ssq-draw-red" placeholder="例如：1 5 12 18 25 33">
-						</div>
-						<div class="input-group">
-							<label for="ssq-draw-blue">蓝球（1个）</label>
-							<input type="text" id="ssq-draw-blue" placeholder="例如：9">
-						</div>
-						<button class="btn" onclick="saveDrawNumbers('ssq')">保存</button>
-					</div>
+					<button class="btn btn-draw" onclick="drawLottery('ssq')">开奖</button>
 				</div>
 
-				<button class="btn btn-draw" onclick="drawLottery('ssq')">开奖</button>
+				
 
 				<div class="result-container" id="ssq-result">
 					<div class="result-title">开奖结果</div>
@@ -295,29 +287,19 @@
 						<p>前区：<span id="dlt-selected-front"></span></p>
 						<p>后区：<span id="dlt-selected-back"></span></p>
 					</div>
-					<button id="dlt-confirm" class="btn content" onclick="Confirm('dlt')">确认选号</button>
+					<button id="dlt-confirm" class="btn content" onclick="ConfirmNumber('dlt')">确认选号</button>
+					<p><span id="dlt-sum-number">0</span>注</p>
 				</div>
-				<div id="dlt-selected">
-					
+				<div class="selected-area">
+					<div id="dlt-selected">
+						
+					</div>
 				</div>
 				<div class="draw-numbers" id="dlt-draw">
 					<div class="draw-title">开奖号码</div>
 					<div class="draw-balls" id="dlt-draw-balls"></div>
-					<div class="edit-draw" onclick="editDrawNumbers('dlt')">修改开奖号码</div>
-					<div class="hidden" id="dlt-draw-edit">
-						<div class="input-group">
-							<label for="dlt-draw-front">前区（5个，用空格分隔）</label>
-							<input type="text" id="dlt-draw-front" placeholder="例如：3 8 15 22 34">
-						</div>
-						<div class="input-group">
-							<label for="dlt-draw-back">后区（2个，用空格分隔）</label>
-							<input type="text" id="dlt-draw-back" placeholder="例如：5 11">
-						</div>
-						<button class="btn" onclick="saveDrawNumbers('dlt')">保存</button>
-					</div>
+					<button class="btn btn-draw" onclick="drawLottery('dlt')">开奖</button>
 				</div>
-
-				<button class="btn btn-draw" onclick="drawLottery('dlt')">开奖</button>
 
 				<div class="result-container" id="dlt-result">
 					<div class="result-title">开奖结果</div>
