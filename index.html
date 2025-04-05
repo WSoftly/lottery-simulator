@@ -203,11 +203,9 @@
 			</div>
 
 			<!-- 双色球模拟器 -->
-			<div id="ssq-simulator" class="simulator">
+			<div id="ssq-simulator" class="content">
 				<button class="btn back-btn" onclick="backToHome()">返回首页</button>
 				<h2>双色球模拟选号</h2>
-
-				<div class="alert" id="ssq-alert"></div>
 
 				<div class="control-panel">
 					<button class="btn" onclick="randomSelect('ssq-red', 6)">机选红球</button>
@@ -216,7 +214,9 @@
 					<button class="btn" onclick="batchRandomSelect('ssq', 5)">机选5注</button>
 					<button class="btn btn-reset" onclick="resetSelection('ssq')">重置</button>
 				</div>
-
+				
+				<div class="alert" id="ssq-alert"></div>
+				
 				<h3>红球区（选6个）</h3>
 				<div class="ball-container" id="ssq-red">
 					<!-- 红球1-33 -->
@@ -241,13 +241,12 @@
 						
 					</div>
 				</div>
-				<div class="draw-numbers" id="ssq-draw">
+				<div class="draw-numbers" id="ssq-draw" ondblclick="showDraw(this)">
 					<div class="draw-title">开奖号码</div>
-					<div class="draw-balls" id="ssq-draw-balls"></div>
+					<div class="draw-balls content" id="ssq-draw-balls"></div>
 					<button class="btn btn-draw" onclick="drawLottery('ssq')">开奖</button>
+					<button class="btn btn-amend content">修改开奖号码</button>
 				</div>
-
-				
 
 				<div class="result-container" id="ssq-result">
 					<div class="result-title">开奖结果</div>
@@ -257,11 +256,9 @@
 				</div>
 			</div>
 			<!-- 大乐透模拟器 -->
-			<div id="dlt-simulator" class="simulator">
+			<div id="dlt-simulator" class="content">
 				<button class="btn back-btn" onclick="backToHome()">返回首页</button>
 				<h2>大乐透模拟选号</h2>
-
-				<div class="alert" id="dlt-alert"></div>
 
 				<div class="control-panel">
 					<button class="btn" onclick="randomSelect('dlt-front', 5)">机选前区</button>
@@ -270,6 +267,8 @@
 					<button class="btn" onclick="batchRandomSelect('dlt', 5)">机选5注</button>
 					<button class="btn btn-reset" onclick="resetSelection('dlt')">重置</button>
 				</div>
+
+				<div class="alert" id="dlt-alert"></div>
 
 				<h3>前区（选5个，1-35）</h3>
 				<div class="ball-container" id="dlt-front">
@@ -295,10 +294,11 @@
 						
 					</div>
 				</div>
-				<div class="draw-numbers" id="dlt-draw">
+				<div class="draw-numbers" id="dlt-draw" ondblclick="showDraw(this)">
 					<div class="draw-title">开奖号码</div>
-					<div class="draw-balls" id="dlt-draw-balls"></div>
+					<div class="draw-balls content" id="dlt-draw-balls"></div>
 					<button class="btn btn-draw" onclick="drawLottery('dlt')">开奖</button>
+					<button class="btn btn-amend content">修改开奖号码</button>
 				</div>
 
 				<div class="result-container" id="dlt-result">

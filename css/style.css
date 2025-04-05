@@ -17,7 +17,7 @@ body {
 	padding: 20px;
 }
 
-#home{
+#home {
 	margin: 20px 0;
 }
 
@@ -30,39 +30,45 @@ header {
 	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.conclusion{
+.conclusion {
 	display: flex;
 	align-items: center;
 	justify-content: space-around;
 	padding: 20px;
 	background-color: #fff;
 	border-radius: 8px;
-	box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
+
 .conclusion h3 {
 	color: #3498db;
 	cursor: default;
 	border-bottom: 2px solid #eee;
 }
-@keyframes up{
-	0%{
-		transform: translate(-100px,50px) scale(0);
+
+@keyframes up {
+	0% {
+		transform: translate(-100px, 50px) scale(0);
 	}
-	
-	15%{
-		transform: translate(0px,0px) scale(1.2);
+
+	15% {
+		transform: translate(0px, 0px) scale(1.2);
 	}
-	30%{
-		transform: translate(0px,0px) scale(1);
+
+	30% {
+		transform: translate(0px, 0px) scale(1);
 	}
-	50%{
-		transform: translate(30px,-20px) scale(1);
+
+	50% {
+		transform: translate(30px, -20px) scale(1);
 	}
-	100%{
-		transform: translate(30px,-20px) scale(1);
+
+	100% {
+		transform: translate(30px, -20px) scale(1);
 	}
 }
-.conclusion a{
+
+.conclusion a {
 	width: fit-content;
 	text-decoration: none;
 	font-weight: bold;
@@ -104,37 +110,45 @@ h1 {
 	margin-bottom: 40px;
 	background: #fff;
 	border-radius: 8px;
-	box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 	padding: 20px;
 }
+
 .rule h3 {
 	color: #d63031;
 	margin-top: 0;
 	padding-bottom: 10px;
 	border-bottom: 2px solid #eee;
 }
+
 table {
 	width: 100%;
 	border-collapse: collapse;
 	margin: 15px 0;
 	font-size: 14px;
 }
-th, td {
+
+th,
+td {
 	padding: 12px 15px;
 	text-align: center;
 	border: 1px solid #ddd;
 }
+
 th {
 	background-color: #f8f9fa;
 	font-weight: bold;
 }
+
 tr {
 	background-color: #f9f9f9;
 }
+
 .probability-formula {
 	font-family: 'Courier New', monospace;
 	text-align: left;
 }
+
 .probability-result {
 	font-weight: bold;
 	color: #e74c3c;
@@ -145,11 +159,13 @@ tr {
 	white-space: nowrap;
 	display: inline-block;
 }
+
 .probability-result:hover {
-    background-color: #ffecec;
-    box-shadow: 0 0 0 1px #e74c3c;
+	background-color: #ffecec;
+	box-shadow: 0 0 0 1px #e74c3c;
 	cursor: default;
 }
+
 .probability-sum {
 	margin-top: 20px;
 	padding: 12px;
@@ -161,15 +177,8 @@ tr {
 
 /* --rule部分 */
 
-.simulator,.content {
-	display: none;
-}
-
-.active {
-	display: block;
-}
-
-.control-panel,.ball-container {
+.control-panel,
+.ball-container {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 10px;
@@ -198,10 +207,12 @@ tr {
 	background-color: #3498db;
 	color: white;
 }
+
 .selected {
 	box-shadow: 0 0 0 3px #f1c40f;
 	transform: scale(1.1);
 }
+
 /* 按钮-- */
 .btn {
 	padding: 10px 20px;
@@ -213,9 +224,11 @@ tr {
 	font-size: 16px;
 	transition: all 0.3s;
 }
+
 .btn:hover {
 	background-color: #27ae60;
 }
+
 .back-btn {
 	background-color: #95a5a6;
 	margin-bottom: 20px;
@@ -224,6 +237,7 @@ tr {
 .back-btn:hover {
 	background-color: #7f8c8d;
 }
+
 .btn-reset {
 	background-color: #e74c3c;
 }
@@ -239,33 +253,54 @@ tr {
 .btn-draw:hover {
 	background-color: #8e44ad;
 }
+
+.btn-amend {
+	background-color: deepskyblue;
+	color: whitesmoke;
+}
+
+.btn-amend:hover {
+	background-color: skyblue;
+	color: lightcyan;
+}
+
+.btn-amend:active {
+	background-color: lightblue;
+	color: red;
+}
+
 /* --按钮 */
-.selected-numbers{
+.selected-numbers {
 	display: flex;
 	align-items: center;
 	flex-wrap: wrap;
 	gap: 40px;
-	margin-bottom: 30px;
+	margin-bottom: 20px;
 }
-.s-show{
+
+.s-show {
 	width: 200px;
 }
-.selected-numbers>p{
+
+.selected-numbers>p {
 	font-size: 1.1em;
 	font-weight: bold;
 	letter-spacing: 0.2em;
 	color: darkgoldenrod;
 	margin-left: 20px;
 }
-.selected-area{
+
+.selected-area {
 	position: relative;
 	height: 150px;
 	overflow: auto;
 }
-.selected-area div{
+
+.selected-area div {
 	position: absolute;
 }
-.card{
+
+.card {
 	width: 300px;
 	height: 30px;
 	text-align: center;
@@ -276,7 +311,8 @@ tr {
 	cursor: pointer;
 	transition: all 0.3s linear;
 }
-.card:hover{
+
+.card:hover {
 	transform: scale(1.1) translateX(20px);
 }
 
@@ -296,7 +332,9 @@ tr {
 }
 
 .draw-balls {
+	display: flex;
 	gap: 10px;
+	margin: 10px 0;
 }
 
 .result-container {
@@ -340,31 +378,48 @@ tr {
 	display: none;
 }
 
+.content {
+	display: none;
+}
+
+.active {
+	display: block;
+}
+
 @media (max-width: 768px) {
-	td, th {
+
+	td,
+	th {
 		padding: 8px 10px;
 	}
-	.probability-formula,.conclusion{
+
+	.probability-formula,
+	.conclusion {
 		display: none;
 	}
+
 	.probability-result {
 		display: block;
 		margin: 5px 0 0 0;
 	}
+
 	.ball {
 		width: 35px;
 		height: 35px;
 		font-size: 14px;
 	}
-	
+
+	.draw-numbers {
+		justify-content: center;
+	}
+
 	.nav {
 		flex-direction: column;
 		align-items: center;
 	}
-	
+
 	.nav-btn {
 		margin: 5px 0;
 		width: 80%;
 	}
 }
-
