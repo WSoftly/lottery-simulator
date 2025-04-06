@@ -322,7 +322,7 @@ tr {
 	justify-content: space-between;
 	flex-wrap: wrap;
 	margin: 20px 0;
-	padding: 15px;
+	padding: 15px 25px;
 	background-color: #e1e1e1;
 	border-radius: 8px;
 }
@@ -334,7 +334,6 @@ tr {
 .draw-balls {
 	display: flex;
 	gap: 10px;
-	margin: 10px 0;
 }
 
 .result-container {
@@ -361,11 +360,6 @@ tr {
 .result-info {
 	font-size: 18px;
 	margin: 10px 0;
-}
-
-.prize {
-	font-weight: bold;
-	color: #e74c3c;
 }
 
 .alert {
@@ -408,11 +402,17 @@ tr {
 		height: 35px;
 		font-size: 14px;
 	}
-
-	.draw-numbers {
-		justify-content: center;
+	
+	.draw-numbers{
+		position: relative;
+		margin-bottom: 60px;
 	}
-
+	.draw-balls{
+		position: absolute;
+		top:80px;
+		left: 15px;
+	}
+	
 	.nav {
 		flex-direction: column;
 		align-items: center;
