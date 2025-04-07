@@ -307,11 +307,11 @@ function generateResultText(stats) {
     // 添加未中奖和总计
     const noWin = stats.prizeLevels["未中奖"] || { count: 0 };
     lines.push(
-        `\n未中奖：${noWin.count}注`,
-        `\n总奖金：${formatMoney(stats.totalPrize)}元`
+        `<br/>未中奖：${noWin.count}注`,
+        `<br/>总奖金：${formatMoney(stats.totalPrize)}元`
     );
 
-    return lines.join('\n');
+    return lines.join('<br/>');
 }
 /*
  * 处理彩票开奖结果数据
