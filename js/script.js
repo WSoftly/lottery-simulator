@@ -7,9 +7,6 @@ function showSimulator(type) {
 	document.getElementById(type + '-simulator').classList.add('active');
 
 	drawNumber(type);
-
-	// 重置开奖结果
-	// document.getElementById(type + '-result').style.display = 'none';
 }
 
 // 返回首页
@@ -177,6 +174,9 @@ function resetSelection(type) {
 	resetSelectedCard(type);
 	SNumber(type);
 	drawNumber(type);
+	
+	// 重置开奖结果
+	document.getElementById(type + '-result').style.display = 'none';
 }
 
 // 初始化页面
@@ -200,6 +200,7 @@ function generateRandomNumbers(min, max, count) {
 }
 // 生成球
 function Ball(container,mainBalls,extraBalls){
+	container.innerHTML='';
 	mainBalls.forEach(num => {
 		const ball = document.createElement('div');
 		ball.className = 'ball red-ball';
@@ -234,7 +235,11 @@ function showDraw(e) {
 }
 // 确认开奖号码
 function checkNumber(type) {
-	showAlert(type, '暂不支持修改！')
+	showAlert(type, '暂不支持修改！');
+	const oParent=document.getElementById(`${type}-draw`);
+	oParent.children[1].classList.add('content');
+	oParent.children[2].classList.remove('content');
+	oParent.children[3].classList.add('content');
 }
 
 // 开奖
@@ -257,10 +262,10 @@ function CardToNumber(str){
 	const extra=[];
 	const arr=str.split('+');
 	arr[0].split(' ').forEach(i=>{
-		main.push(i);
+		main.push(parseInt(i));
 	})
 	arr[1].split(' ').forEach(j=>{
-		extra.push(j);
+		extra.push(parseInt(j));
 	})
 	return {main,extra};
 }
