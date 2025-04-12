@@ -229,10 +229,7 @@
 
 				<div class="selected-numbers">
 					<h3>已选号码</h3>
-					<div class="s-show">
-						<p>红球：<span id="ssq-selected-red"></span></p>
-						<p>蓝球：<span id="ssq-selected-blue"></span></p>
-					</div>
+					<div class="ball-container" id="ssq-container"></div>
 					<button id="ssq-confirm" class="btn content" onclick="ConfirmNumber('ssq')">确认选号</button>
 					<p><span id="ssq-sum-number">0</span>注</p>
 				</div>
@@ -243,9 +240,9 @@
 				</div>
 				<div class="draw-numbers" id="ssq-draw" ondblclick="showDraw(this)">
 					<div class="draw-title">开奖号码</div>
-					<div class="draw-balls content" id="ssq-draw-balls"></div>
 					<button class="btn btn-draw" onclick="drawLottery('ssq')">开奖</button>
 					<button class="btn btn-amend content" onclick="checkNumber('ssq')">修改开奖号码</button>
+					<div class="draw-balls content" id="ssq-draw-balls"></div>
 				</div>
 
 				<div class="result-container" id="ssq-result">
@@ -281,10 +278,7 @@
 
 				<div class="selected-numbers">
 					<h3>已选号码</h3>
-					<div class="s-show">
-						<p>前区：<span id="dlt-selected-front"></span></p>
-						<p>后区：<span id="dlt-selected-back"></span></p>
-					</div>
+					<div class="ball-container" id="dlt-container"></div>
 					<button id="dlt-confirm" class="btn content" onclick="ConfirmNumber('dlt')">确认选号</button>
 					<p><span id="dlt-sum-number">0</span>注</p>
 				</div>
@@ -295,9 +289,9 @@
 				</div>
 				<div class="draw-numbers" id="dlt-draw" ondblclick="showDraw(this)">
 					<div class="draw-title">开奖号码</div>
-					<div class="draw-balls content" id="dlt-draw-balls"></div>
 					<button class="btn btn-draw" onclick="drawLottery('dlt')">开奖</button>
 					<button class="btn btn-amend content" onclick="checkNumber('dlt')">修改开奖号码</button>
+					<div class="draw-balls content" id="dlt-draw-balls"></div>
 				</div>
 
 				<div class="result-container" id="dlt-result">

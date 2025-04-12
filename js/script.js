@@ -21,11 +21,23 @@ function showAlert(type, message) {
 	const alert = document.getElementById(`${type}-alert`);
 	alert.textContent = message;
 	alert.style.display = 'block';
-
+	alert.scrollIntoView({
+		behavior:'smooth',
+		block:'center',
+		inline:'center'
+	});
 	setTimeout(() => {
 		alert.style.display = 'none';
 	}, 3000);
 }
+
+// 初始化页面
+document.addEventListener('DOMContentLoaded', function() {
+	initBalls('ssq-red', 33, 'red-ball');
+	initBalls('ssq-blue', 16, 'blue-ball');
+	initBalls('dlt-front', 35, 'red-ball');
+	initBalls('dlt-back', 12, 'blue-ball');
+});
 
 // 初始化号码球
 function initBalls(containerId, max, ballClass) {
@@ -44,21 +56,6 @@ function initBalls(containerId, max, ballClass) {
 	}
 }
 
-// 更新已选号码显示
-function updateSelectedNumbers(type) {
-	const redBalls = Array.from(document.querySelectorAll(`#${type}-${type === 'ssq' ? 'red' : 'front'} .selected`))
-		.map(b => b.textContent);
-	const blueBalls = Array.from(document.querySelectorAll(`#${type}-${type === 'ssq' ? 'blue' : 'back'} .selected`))
-		.map(b => b.textContent);
-	document.getElementById(`${type}-selected-${type === 'ssq' ? 'red' : 'front'}`).textContent = redBalls.join(' ');
-	document.getElementById(`${type}-selected-${type === 'ssq' ? 'blue' : 'back'}`).textContent = blueBalls.join(' ');
-	if (redBalls.length == (type === 'ssq' ? 6 : 5) && blueBalls.length == (type === 'ssq' ? 1 : 2)) {
-		document.getElementById(`${type}-confirm`).classList.remove('content');
-	} else {
-		document.getElementById(`${type}-confirm`).classList.add('content');
-	}
-}
-
 // 切换号码球选择状态
 function toggleBallSelection(ball, containerId) {
 	const type = containerId.split('-')[0];
@@ -70,13 +67,26 @@ function toggleBallSelection(ball, containerId) {
 		ball.classList.remove('selected');
 	} else {
 		if (selectedBalls.length >= maxSelect) {
-			showAlert(type, `最多只能选择${maxSelect}个号码`);
+			showAlert(type, `该区最多只能选择${maxSelect}个号码`);
 			return;
 		}
 		ball.classList.add('selected');
 	}
 
 	updateSelectedNumbers(type);
+}
+
+// 更新已选号码显示
+function updateSelectedNumbers(type) {
+	const redBalls = Array.from(document.querySelectorAll(`#${type}-${type === 'ssq' ? 'red' : 'front'} .selected`)).map(b => parseInt(b.textContent));
+	const blueBalls = Array.from(document.querySelectorAll(`#${type}-${type === 'ssq' ? 'blue' : 'back'} .selected`)).map(b => parseInt(b.textContent));
+	const container=document.getElementById(`${type}-container`);
+	Ball(container,redBalls,blueBalls);
+	if (redBalls.length == (type === 'ssq' ? 6 : 5) && blueBalls.length == (type === 'ssq' ? 1 : 2)) {
+		document.getElementById(`${type}-confirm`).classList.remove('content');
+	} else {
+		document.getElementById(`${type}-confirm`).classList.add('content');
+	}
 }
 
 // 随机选择号码
@@ -130,25 +140,29 @@ function SNumber(type) {
 }
 // 生成一注选定号码卡片
 function ConfirmNumber(type) {
-	const oCard = document.createElement('p');
-	oCard.classList = `card ${type}-card`;
-	oCard.addEventListener('dblclick', function(e) {
-		e.target.remove();
-		showAlert(type, '已删除一注号码！');
-		SNumber(type);
-	})
 	const oSelected = document.getElementById(`${type}-selected`);
-	const oRed = document.getElementById(`${type}-selected-${type === 'ssq' ? 'red' : 'front'}`);
-	const oBlue = document.getElementById(`${type}-selected-${type === 'ssq' ? 'blue' : 'back'}`);
-	if (oRed.textContent == '' || oBlue.textContent == '') {
+	const oBalls=document.getElementById('ssq-container');
+	if(oBalls.hasChildNodes()){
+		const oCard=oBalls.cloneNode(true);
+		oCard.classList=`ball-container card ${type}-card`;
+		oCard.addEventListener('dblclick', function(e) {
+			e.target.parentNode.remove()
+			showAlert(type, '已删除一注号码！');
+			SNumber(type);
+		})
+		oSelected.prepend(oCard);
+	}else{
 		return;
-	} else {
-		oCard.textContent = oRed.textContent + '+' + oBlue.textContent;
-		oSelected.appendChild(oCard);
 	}
-	resetNumber(type);
-	updateSelectedNumbers(type);
-	SNumber(type);
+	// if (oRed.textContent == '' || oBlue.textContent == '') {
+	// 	return;
+	// } else {
+	// 	oCard.textContent = oRed.textContent + '+' + oBlue.textContent;
+	// 	oSelected.appendChild(oCard);
+	// }
+	// resetNumber(type);
+	// updateSelectedNumbers(type);
+	// SNumber(type);
 }
 
 //重置选号球选中状态
@@ -178,14 +192,6 @@ function resetSelection(type) {
 	// 重置开奖结果
 	document.getElementById(type + '-result').style.display = 'none';
 }
-
-// 初始化页面
-document.addEventListener('DOMContentLoaded', function() {
-	initBalls('ssq-red', 33, 'red-ball');
-	initBalls('ssq-blue', 16, 'blue-ball');
-	initBalls('dlt-front', 35, 'red-ball');
-	initBalls('dlt-back', 12, 'blue-ball');
-});
 
 // 生成随机号码
 function generateRandomNumbers(min, max, count) {
@@ -229,16 +235,16 @@ function drawNumber(type) {
 // 查看开奖号码
 function showDraw(e) {
 	const oDN = e.children;
-	oDN[1].classList.remove('content');
-	oDN[2].classList.add('content');
+	oDN[1].classList.add('content');
+	oDN[2].classList.remove('content');
 	oDN[3].classList.remove('content');
 }
 // 确认开奖号码
 function checkNumber(type) {
 	showAlert(type, '暂不支持修改！');
 	const oParent=document.getElementById(`${type}-draw`);
-	oParent.children[1].classList.add('content');
-	oParent.children[2].classList.remove('content');
+	oParent.children[1].classList.remove('content');
+	oParent.children[2].classList.add('content');
 	oParent.children[3].classList.add('content');
 }
 
