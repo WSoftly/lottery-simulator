@@ -5,8 +5,6 @@ function showSimulator(type) {
 	document.getElementById('dlt-simulator').classList.remove('active');
 
 	document.getElementById(type + '-simulator').classList.add('active');
-
-	drawNumber(type);
 }
 
 // 返回首页
@@ -72,7 +70,6 @@ function toggleBallSelection(ball, containerId) {
 		}
 		ball.classList.add('selected');
 	}
-
 	updateSelectedNumbers(type);
 }
 
@@ -81,12 +78,36 @@ function updateSelectedNumbers(type) {
 	const redBalls = Array.from(document.querySelectorAll(`#${type}-${type === 'ssq' ? 'red' : 'front'} .selected`)).map(b => parseInt(b.textContent));
 	const blueBalls = Array.from(document.querySelectorAll(`#${type}-${type === 'ssq' ? 'blue' : 'back'} .selected`)).map(b => parseInt(b.textContent));
 	const container=document.getElementById(`${type}-container`);
-	Ball(container,redBalls,blueBalls);
-	if (redBalls.length == (type === 'ssq' ? 6 : 5) && blueBalls.length == (type === 'ssq' ? 1 : 2)) {
-		document.getElementById(`${type}-confirm`).classList.remove('content');
-	} else {
-		document.getElementById(`${type}-confirm`).classList.add('content');
+	const DBcontainer=document.getElementById(`${type}-draw-balls`);
+	
+	if(DBcontainer.classList.length==1){
+		Ball(DBcontainer,redBalls,blueBalls);
+	}else{
+		Ball(container,redBalls,blueBalls);
+		if (redBalls.length == (type === 'ssq' ? 6 : 5) && blueBalls.length == (type === 'ssq' ? 1 : 2)) {
+			document.getElementById(`${type}-confirm`).classList.remove('content');
+		} else {
+			document.getElementById(`${type}-confirm`).classList.add('content');
+		}
 	}
+}
+
+// 生成球
+function Ball(container,mainBalls,extraBalls){
+	container.innerHTML='';
+	mainBalls.forEach(num => {
+		const ball = document.createElement('div');
+		ball.className = 'ball red-ball';
+		ball.textContent = num < 10 ? '0' + num : num;
+		container.appendChild(ball);
+	});
+	
+	extraBalls.forEach(num => {
+		const ball = document.createElement('div');
+		ball.className = 'ball blue-ball';
+		ball.textContent = num < 10 ? '0' + num : num;
+		container.appendChild(ball);
+	});
 }
 
 // 随机选择号码
@@ -134,14 +155,10 @@ function batchRandomSelect(type, count) {
 	}
 }
 
-// 更新已选号码注数
-function SNumber(type) {
-	document.getElementById(`${type}-sum-number`).textContent = document.getElementsByClassName(`${type}-card`).length;
-}
 // 生成一注选定号码卡片
 function ConfirmNumber(type) {
 	const oSelected = document.getElementById(`${type}-selected`);
-	const oBalls=document.getElementById('ssq-container');
+	const oBalls=document.getElementById(`${type}-container`);
 	if(oBalls.hasChildNodes()){
 		const oCard=oBalls.cloneNode(true);
 		oCard.classList=`ball-container card ${type}-card`;
@@ -154,15 +171,10 @@ function ConfirmNumber(type) {
 	}else{
 		return;
 	}
-	// if (oRed.textContent == '' || oBlue.textContent == '') {
-	// 	return;
-	// } else {
-	// 	oCard.textContent = oRed.textContent + '+' + oBlue.textContent;
-	// 	oSelected.appendChild(oCard);
-	// }
-	// resetNumber(type);
-	// updateSelectedNumbers(type);
-	// SNumber(type);
+	
+	resetNumber(type);
+	updateSelectedNumbers(type);
+	SNumber(type);
 }
 
 //重置选号球选中状态
@@ -177,6 +189,10 @@ function resetNumber(type) {
 		});
 	}
 }
+// 更新已选号码注数
+function SNumber(type) {
+	document.getElementById(`${type}-sum-number`).textContent = document.getElementsByClassName(`${type}-card`).length;
+}
 //重置选号
 function resetSelectedCard(type) {
 	document.getElementById(`${type}-selected`).innerHTML = '';
@@ -187,7 +203,6 @@ function resetSelection(type) {
 	updateSelectedNumbers(type);
 	resetSelectedCard(type);
 	SNumber(type);
-	drawNumber(type);
 	
 	// 重置开奖结果
 	document.getElementById(type + '-result').style.display = 'none';
@@ -204,24 +219,8 @@ function generateRandomNumbers(min, max, count) {
 	}
 	return numbers.sort((a, b) => a - b);
 }
-// 生成球
-function Ball(container,mainBalls,extraBalls){
-	container.innerHTML='';
-	mainBalls.forEach(num => {
-		const ball = document.createElement('div');
-		ball.className = 'ball red-ball';
-		ball.textContent = num < 10 ? '0' + num : num;
-		container.appendChild(ball);
-	});
-	
-	extraBalls.forEach(num => {
-		const ball = document.createElement('div');
-		ball.className = 'ball blue-ball';
-		ball.textContent = num < 10 ? '0' + num : num;
-		container.appendChild(ball);
-	});
-}
-// 生成初始开奖号码
+
+// 生成随机开奖号码
 function drawNumber(type) {
 	const mainBalls = generateRandomNumbers(1, (type == 'ssq' ? 33 : 35), (type == 'ssq' ? 6 : 5));
 	const extraBalls = generateRandomNumbers(1, (type == 'ssq' ? 16 : 12), (type == 'ssq' ? 1 : 2));
@@ -233,7 +232,9 @@ function drawNumber(type) {
 }
 
 // 查看开奖号码
-function showDraw(e) {
+function showDraw(e,type) {
+	resetNumber(type);
+	updateSelectedNumbers(type);
 	const oDN = e.children;
 	oDN[1].classList.add('content');
 	oDN[2].classList.remove('content');
@@ -241,7 +242,23 @@ function showDraw(e) {
 }
 // 确认开奖号码
 function checkNumber(type) {
-	showAlert(type, '暂不支持修改！');
+	const newDN=document.getElementById(`${type}-draw-balls`);
+	let R=0,B=0;
+	Array.from(newDN.childNodes).forEach(i=>{
+		if(i.classList[1]=='red-ball'){
+			R++;
+		}
+		if(i.classList[1]=='blue-ball'){
+			B++;
+		}
+	})
+	if((type=='ssq'&&R==6&&B==1)||(type=='dlt'&&R==5&&B==2)){
+		showAlert(type,'保存成功！');
+	}else{
+		showAlert(type,'选球不足，修改失败！');
+		resetNumber(type);
+		newDN.innerHTML='';
+	}
 	const oParent=document.getElementById(`${type}-draw`);
 	oParent.children[1].classList.remove('content');
 	oParent.children[2].classList.add('content');
@@ -250,28 +267,45 @@ function checkNumber(type) {
 
 // 开奖
 function drawLottery(type) {
-	const oDrawNumber=drawNumber(type);
+	const oDrawNumber={
+		mainBalls:[],
+		extraBalls:[]
+	};
+	const newDN=document.getElementById(`${type}-draw-balls`);
+	if(newDN.innerHTML==''){
+		const obj=drawNumber(type);
+		oDrawNumber.mainBalls=obj.mainBalls;
+		oDrawNumber.extraBalls=obj.extraBalls;
+	}else{
+		Array.from(newDN.childNodes).forEach(node=>{
+			if(node.classList[1]=='red-ball'){
+				oDrawNumber.mainBalls.push(parseInt(node.innerHTML));
+			}else{
+				oDrawNumber.extraBalls.push(parseInt(node.innerHTML));
+			}
+		})
+	}
 	const UserNumbers=document.getElementsByClassName(`${type}-card`);
 	const res=document.getElementById(`${type}-result-balls`);
 	Ball(res,oDrawNumber.mainBalls,oDrawNumber.extraBalls);
 	const oRes=[];
 	Array.from(UserNumbers).forEach((i,index)=>{
-		const User=CardToNumber(i.textContent);
+		const User=CardToNumber(i.childNodes);
 		oRes.push(checkPrize(type,User.main,User.extra,oDrawNumber.mainBalls,oDrawNumber.extraBalls));
 		oRes[index].number=User;
 	})
 	showResult(type,oRes);
 }
 
-function CardToNumber(str){
+function CardToNumber(node){
 	const main=[];
 	const extra=[];
-	const arr=str.split('+');
-	arr[0].split(' ').forEach(i=>{
-		main.push(parseInt(i));
-	})
-	arr[1].split(' ').forEach(j=>{
-		extra.push(parseInt(j));
+	Array.from(node).forEach(i=>{
+		if(i.classList[1]=='red-ball'){
+			main.push(parseInt(i.innerHTML));
+		}else{
+			extra.push(parseInt(i.innerHTML));
+		}
 	})
 	return {main,extra};
 }
