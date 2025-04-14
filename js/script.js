@@ -285,15 +285,16 @@ function drawLottery(type) {
 			}
 		})
 	}
-	const UserNumbers=document.getElementsByClassName(`${type}-card`);
 	const res=document.getElementById(`${type}-result-balls`);
 	Ball(res,oDrawNumber.mainBalls,oDrawNumber.extraBalls);
+	const UserNumbers=document.getElementsByClassName(`${type}-card`);
 	const oRes=[];
 	Array.from(UserNumbers).forEach((i,index)=>{
 		const User=CardToNumber(i.childNodes);
 		oRes.push(checkPrize(type,User.main,User.extra,oDrawNumber.mainBalls,oDrawNumber.extraBalls));
 		oRes[index].number=User;
 	})
+	// console.log(oRes);
 	showResult(type,oRes);
 }
 
@@ -353,6 +354,7 @@ function generateResultText(stats) {
 
     return lines.join('<br/>');
 }
+
 /*
  * 处理彩票开奖结果数据
  * @param {Array} results 开奖结果数组
@@ -390,11 +392,13 @@ function processLotteryResults(results) {
 function checkDLTPrize(mainMatch, extraMatch) {
 	if (mainMatch === 5 && extraMatch === 2) return {
 		level: "一等奖",
-		prize: "浮动"
+		prize: Math.floor(Math.random() * (10000000 - 5000000 + 1) + 5000000)
+		//500万-1000万随机值
 	};
 	if (mainMatch === 5 && extraMatch === 1) return {
 		level: "二等奖",
-		prize: "浮动"
+		prize: Math.floor(Math.random() * (500000 - 100000 + 1) + 100000)
+		// 10万-50万随机值
 	};
 	if (mainMatch === 5 && extraMatch === 0) return {
 		level: "三等奖",
@@ -440,11 +444,13 @@ function checkDLTPrize(mainMatch, extraMatch) {
 function checkSSQPrize(mainMatch, extraMatch) {
 	if (mainMatch === 6 && extraMatch === 1) return {
 		level: "一等奖",
-		prize: "浮动"
+		prize: Math.floor(Math.random() * (10000000 - 5000000 + 1) + 5000000)
+		// 500万-1000万随机值
 	};
 	if (mainMatch === 6 && extraMatch === 0) return {
 		level: "二等奖",
-		prize: "浮动"
+		prize: Math.floor(Math.random() * (500000 - 100000 + 1) + 100000)
+		// 10万-50万随机值
 	};
 	if (mainMatch === 5 && extraMatch === 1) return {
 		level: "三等奖",
