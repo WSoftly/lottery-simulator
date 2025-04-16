@@ -113,21 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initBalls('ssq-blue', 'ssq');
     initBalls('dlt-front', 'dlt');
     initBalls('dlt-back', 'dlt');
-	
-	document.getElementById('ssq-simulator').addEventListener('click', (e) => {
-	    if (e.target.classList.contains('ball')) {
-	        const containerId = e.target.parentElement.id;
-	        const type = 'ssq';
-	        toggleBallSelection(e.target, containerId, type);
-	    }
-	});
-	document.getElementById('dlt-simulator').addEventListener('click', (e) => {
-	    if (e.target.classList.contains('ball')) {
-	        const containerId = e.target.parentElement.id;
-	        const type = 'dlt';
-	        toggleBallSelection(e.target, containerId, type);
-	    }
-	});
 });
 
 // 初始化号码球
@@ -146,6 +131,11 @@ function initBalls(containerId, type) {
         ball.dataset.number = i;
         container.appendChild(ball);
     }
+	container.addEventListener('click', (e) => {
+	    if (e.target.classList.contains('ball')) {
+	        toggleBallSelection(e.target, containerId, type);
+	    }
+	});
 }
 
 // 切换号码球选择状态
